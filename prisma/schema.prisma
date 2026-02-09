@@ -13,11 +13,13 @@ enum Role {
 }
 
 model User {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   name String?
   email String @unique
+  emailVerified DateTime?
   password String?
-  phone String
+  phone String?
+  image String?
   role Role @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -26,7 +28,7 @@ model User {
 }
 
 model Account {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
   userId String
   type String
   provider String
@@ -42,4 +44,57 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+enum TournamentStatus {
+  DRAFT
+  PUBLISHED 
+  LIVE
+  COMPLETED 
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Tournament {
+  id String @id @default(uuid())
+  title String
+  description String?
+  category String
+
+  startTime DateTime
+  windowOpenTime DateTime
+  durationPerQ Int
+  totalQuestions Int
+  difficulty Difficulty
+  status TournamentStatus @default(PUBLISHED)
+
+  entryFee Float
+  prizePool Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  questions Question[]
+}
+
+model Question {
+  id String @id @default(uuid())
+  tournamentId String
+  text String
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  
+  options Option[]
+}
+
+model Option {
+  id String @id @default(uuid())
+  questionId String
+  text String
+  isCorrect Boolean @default(false)
+  
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
