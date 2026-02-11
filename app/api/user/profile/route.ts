@@ -3,6 +3,40 @@ import { prisma } from "@/lib/prisma";
 import { checkUser } from "@/lib/checkAuth";
 import z from "zod";
 
+export async function GET() {
+  try {
+    const userId = await checkUser();
+    if (!userId) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true, 
+        username: true, 
+        email: true, 
+        image: true,
+        phone: true,
+        dob: true,
+        country: true,
+        age: true,
+        isProfileComplete: true
+      }
+    });
+
+    if (!user) {
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, user }, { status: 200 });
+
+  } catch {
+    return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 const profileSchema = z.object({
   fullName: z.string().min(2, "Full Name must be at least 2 characters").optional(),
   username: z.string().min(3, "Username must be at least 3 characters").regex(/^[a-zA-Z0-9_]+$/, "Username must be alphanumeric").optional(),
