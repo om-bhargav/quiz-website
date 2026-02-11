@@ -4,10 +4,9 @@ import bcrypt from "bcryptjs";
 import z from "zod";
 
 const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters").regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  name: z.string().min(2, "Name must be at least 2 characters").optional(),
-  phone: z.string().min(10, "Phone number must be at least 10 characters").optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -19,12 +18,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: "Validation Error", errors: validation.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    const { email, password, name, phone } = validation.data;
+    const { email, password, username } = validation.data;
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { username: username }
+        ]
+      }
+    });
 
     if (existingUser) {
-      return NextResponse.json({ success: false, message: "User with this email already exists" }, { status: 409 });
+      if (existingUser.email === email) {
+        return NextResponse.json({ success: false, message: "Email already registered" }, { status: 409 });
+      }
+      return NextResponse.json({ success: false, message: "Username already taken" }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -32,10 +41,12 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         email,
-        name,
+        username, 
+        name: username,
         password: hashedPassword,
-        phone,
         role: "USER",
+        status: "ACTIVE",
+        isProfileComplete: false,
         wallet: {
           create: {
             balance: 0

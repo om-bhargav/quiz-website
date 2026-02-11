@@ -11,13 +11,10 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
-    // google
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-
-    // credential
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -37,6 +34,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("User not found");
         }
 
+        if (user.status === "SUSPENDED") {
+          throw new Error("Your account has been suspended.");
+        }
+
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
@@ -53,37 +54,55 @@ export const authOptions: NextAuthOptions = {
   events: {
     async createUser({ user }) {
       try {
+
         await prisma.wallet.create({
           data: {
             userId: user.id,
             balance: 0,
           },
         });
+        
       } catch (error) {
-        console.error("Error creating wallet for OAuth user:", error);
+        console.error("Error in createUser event:", error);
       }
     },
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user }) {
+      const dbUser = await prisma.user.findUnique({ where: { email: user.email! } });
+      if (dbUser && dbUser.status === "SUSPENDED") {
+        return false; 
+      }
+      return true;
+    },
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.username = user.username; 
+        token.isProfileComplete = user.isProfileComplete;
       }
+      
+      if (trigger === "update" && session) {
+        return { ...token, ...session.user };
+      }
+      
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.username = token.username as string;
+        session.user.isProfileComplete = token.isProfileComplete as boolean;
       }
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login", 
+    signIn: "/login",
+    error: "/login",
   },
 };
 
