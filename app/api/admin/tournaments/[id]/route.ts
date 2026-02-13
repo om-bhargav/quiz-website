@@ -16,7 +16,8 @@ export async function GET( req: NextRequest, { params }: { params: Promise<{ id:
     const tournament = await prisma.tournament.findUnique({
       where: { id: tournamentId },
       include: {
-        questions: { include: { options: true } }
+        questions: { include: { options: true } },
+        category: true
       }
     });
 
@@ -33,7 +34,7 @@ export async function GET( req: NextRequest, { params }: { params: Promise<{ id:
 const updateTournamentSchema = z.object({
   title: z.string().min(3).optional(),
   description: z.string().optional(),
-  category: z.string().min(2).optional(),
+  categoryId: z.string().min(1).optional(),
   startTime: z.string().transform((str) => new Date(str)).optional(),
   windowOpenTime: z.string().transform((str) => new Date(str)).optional(),
   durationPerQ: z.number().min(5).optional(),
@@ -72,7 +73,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const currentTournament = await prisma.tournament.findUnique({ 
       where: { id: tournamentId },
-      include: { questions: { select: { id: true } } }
+      include: { 
+        category: true, 
+        questions: { select: { id: true } } 
+      }
     });
 
     if (!currentTournament) {
@@ -94,7 +98,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           const newQuestions = await generateExactQuestions({
             title: data.title || currentTournament.title,
             description: data.description || currentTournament.description || "",
-            category: data.category || currentTournament.category,
+            category: currentTournament.category.name,
             difficulty: data.difficulty || currentTournament.difficulty,
             count: difference 
           });
@@ -124,7 +128,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data: {
         title: data.title,
         description: data.description,
-        category: data.category,
+        categoryId: data.categoryId,
         startTime: data.startTime,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,

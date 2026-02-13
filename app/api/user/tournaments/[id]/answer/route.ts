@@ -6,7 +6,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const userId = await checkUser();
     if (!userId){
-        return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 404 });
     }
 
     const { id: tournamentId } = await params;

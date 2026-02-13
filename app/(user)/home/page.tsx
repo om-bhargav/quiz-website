@@ -6,7 +6,7 @@ import PrizesSection from './_components/PrizesSection'
 
 export default function page() {
   return (
-    <div className='max-w-xl grid gap-7 p-5 w-full mx-auto'>
+    <div className='w-full grid gap-7 p-5 w-full mx-auto'>
         <HeroSection/>
         <CategorySection/>
         <LiveContests/>

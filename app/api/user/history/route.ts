@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const userId = await checkUser();
     if (!userId){
-      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 404 });
     }
 
     const history = await prisma.registration.findMany({
@@ -36,7 +36,8 @@ export async function GET() {
 
     return NextResponse.json({ success: true, history: formattedHistory });
 
-  } catch {
+  } catch (e) {
+    console.log(e);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }

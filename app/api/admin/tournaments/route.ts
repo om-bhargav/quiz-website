@@ -4,16 +4,50 @@ import { checkAdmin } from "@/lib/checkAuth";
 import { z } from "zod";
 import { generateExactQuestions } from "@/lib/quizGenerator";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const admin = await checkAdmin();
     if (!admin) {
       return NextResponse.json({ success: false, message: "Admin access required" }, { status: 403 });
     }
 
-    const tournaments = await prisma.tournament.findMany({ orderBy: { createdAt: "desc" }});
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search");
+    const difficulty = searchParams.get("difficulty");
+    const categoryId = searchParams.get("categoryId"); 
+    const status = searchParams.get("status");
 
-    return NextResponse.json({ success: true, tournaments }, { status: 200 });
+    const whereClause: any = {};
+
+    if (search) {
+      whereClause.title = {
+        contains: search,
+        mode: "insensitive",
+      };
+    }
+
+    if (difficulty) {
+      whereClause.difficulty = difficulty as "EASY" | "MEDIUM" | "HARD";
+    }
+
+    if (categoryId) {
+      whereClause.categoryId = categoryId;
+    }
+
+    if (status) {
+      whereClause.status = status as "DRAFT" | "PUBLISHED" | "LIVE" | "COMPLETED";
+    }
+
+    const tournaments = await prisma.tournament.findMany({
+        where: whereClause,
+        orderBy: { createdAt: "desc" },
+        include: {
+            category: true 
+        }
+    });
+
+    return NextResponse.json({ success: true, count: tournaments.length, tournaments }, { status: 200 });
+
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
@@ -22,7 +56,7 @@ export async function GET() {
 const tournamentSchema = z.object({
   title: z.string().min(3),
   description: z.string().optional(),
-  category: z.string().min(2),
+  categoryId: z.string().min(1, "Category is required"),
   startTime: z.string().transform((str) => new Date(str)),
   windowOpenTime: z.string().transform((str) => new Date(str)),
   durationPerQ: z.number().min(5),
@@ -50,6 +84,14 @@ export async function POST(req: NextRequest) {
 
     const data = validation.data;
 
+    const category = await prisma.category.findUnique({
+        where: { id: data.categoryId }
+    });
+
+    if (!category) {
+        return NextResponse.json({ success: false, message: "Invalid Category ID" }, { status: 400 });
+    }
+
     const checkTitle = await prisma.tournament.findFirst({ where: { title: data.title } });
     if (checkTitle) {
       return NextResponse.json({ success: false, message: "Tournament with this title already exists" }, { status: 409 });
@@ -68,7 +110,7 @@ export async function POST(req: NextRequest) {
       generatedQuestions = await generateExactQuestions({
         title: data.title,
         description: data.description || "",
-        category: data.category,
+        category: category.name,
         difficulty: data.difficulty,
         count: data.totalQuestions
       });
@@ -80,7 +122,7 @@ export async function POST(req: NextRequest) {
       data: {
         title: data.title,
         description: data.description,
-        category: data.category,
+        categoryId: category.id,
         startTime: data.startTime,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,

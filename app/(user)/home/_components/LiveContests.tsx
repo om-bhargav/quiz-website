@@ -8,7 +8,7 @@ export default function LiveContests() {
       <div className="flex text-2xl font-extrabold items-center justify-between">
         <div className="uppercase">live contests</div>
         <div className="flex gap-2 items-center">
-          <div className="h-4 w-4 bg-pink-300 rounded-full animate-pulse" />{" "}
+          <div className="h-4 w-4 bg-pink-400 rounded-full animate-pulse" />{" "}
           LIVE
         </div>
       </div>

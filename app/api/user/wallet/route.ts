@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const userId = await checkUser();
     if (!userId){
-      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 404 });
     }
 
     const wallet = await prisma.wallet.findUnique({

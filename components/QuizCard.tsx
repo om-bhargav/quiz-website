@@ -42,7 +42,7 @@ export default function QuizCard({color}:{color: string}) {
           </div>
 
           {/* Progress Bar */}
-          <div className="h-3 w-full bg-transparent rounded-full border-2 border-black overflow-hidden">
+          <div className="h-3 w-full bg-gray-400/30 rounded-full border-2 border-black overflow-hidden">
             <div
               className="h-full bg-black"
               style={{ width: `${percentage}%` }}
@@ -52,7 +52,7 @@ export default function QuizCard({color}:{color: string}) {
 
         {/* Join Button */}
         <Button className="w-full rounded-lg bg-black hover:bg-black text-white text-lg font-extrabold py-8 shadow-[4px_4px_0px_0px_var(--color-gray-600)]">
-          JOIN QUIZ →
+          VIEW →
         </Button>
       </Card>
   );

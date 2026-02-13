@@ -16,7 +16,14 @@ export async function GET() {
         name: true,
         email: true,
         image: true,
+        status: true,
         createdAt: true,
+        wallet: {
+            select: { balance: true }
+        },
+        _count: {
+            select: { registration: true }
+        }
       },
       orderBy: { createdAt: "desc" }
     });

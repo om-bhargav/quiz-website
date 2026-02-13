@@ -22,7 +22,7 @@ export default function HeroSection() {
           </div>
           <NextButton text={"Start Playing"} />
         </div>
-        <div className="h-[90px] w-[100px] relative">
+        <div className="h-[80px] w-[100px] relative">
           <Image
             src={"/trophee.png"}
             className="rounded-lg border-3 w-full h-full object-cover border-black shadow-[5px_5px_0px_1px_black] z-5"

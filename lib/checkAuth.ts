@@ -27,7 +27,7 @@ export async function checkUser() {
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (!user) {
+  if (!user || user.status === "SUSPENDED") {
     return null;
   }
 

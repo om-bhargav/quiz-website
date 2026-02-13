@@ -6,18 +6,24 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const filter = searchParams.get("filter");
     const search = searchParams.get("search");
+    const categoryId = searchParams.get("categoryId");
 
     const whereClause: any = { 
       status: { in: ["PUBLISHED", "LIVE"] }
     };
 
     if (search) {
-      whereClause.OR = [
-        { title: { contains: search, mode: "insensitive" } }, 
-        { category: { contains: search, mode: "insensitive" } },
-      ];
+      whereClause.title = {
+        contains: search,
+        mode: "insensitive",
+      };
     }
 
+    if (categoryId) {
+      whereClause.categoryId = categoryId;
+    }
+
+    
     if (filter === "upcoming") {
       whereClause.startTime = { gt: new Date() };
     } else if (filter === "live") {
