@@ -1,8 +1,10 @@
-export const colorMap = {
-  yellow: "bg-yellow-400",
-  green: "bg-green-200",
-  pink: "bg-pink-300",
-  amber: "bg-amber-300",
-  blue: "bg-blue-300",
+export const colorMap: any = {
+  yellow: "bg-[#FDE68A]",
+  green: "bg-[#A5F3A0]",
+  pink: "bg-[#A78BFA]",
+  amber: "bg-[#FFDB58]",
+  blue: "bg-[#A5F3FC]",
   "sky-blue": "bg-blue-200",
+  purple: "bg-[#A78BFA]"
 };
+export const SITE_NAME = "Quiz Management";

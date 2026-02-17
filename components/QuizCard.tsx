@@ -1,59 +1,73 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
 import { colorMap } from "@/lib/constants";
-export default function QuizCard({color}:{color: string}) {
-  const joined = 342;
-  const total = 500;
-  const percentage = Math.round((joined / total) * 100);
+
+interface HomeQuizCardProps {
+  id: number;
+  title: string;
+  prizePool: string;
+  index: number;
+  color: string; // 🔥 now required from props
+}
+
+export default function HomeQuizCard({
+  id,
+  title,
+  prizePool,
+  index,
+  color,
+}: HomeQuizCardProps) {
+  // const slug = useMemo(
+  //   () => title.toLowerCase().replace(/\s+/g, "-"),
+  //   [title]
+  // );
+
+  const rotation = index % 2 === 0 ? "-0.9deg" : "0.8deg";
 
   return (
+    <Link
+      href={`/contest/${id}`}
+      className="block live-card-fade-in focus:outline-none"
+      style={{ animationDelay: `${index * 0.06}s` }}
+    >
+      <Card
+        className={`relative h-32 rounded-[14px] border-[3px] border-black overflow-hidden 
+                   transition-transform duration-200 
+                   hover:scale-[1.02] active:scale-[0.98] ${colorMap[color]}`}
+        style={{
+          boxShadow: "4px 4px 0px #000000",
+          transform: `rotate(${rotation})`,
+        }}
+      >
+        <CardContent className="relative z-10 p-4 flex items-center justify-between gap-3 h-full">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-[16px] font-[900] uppercase leading-tight mb-1">
+              {title}
+            </h3>
 
-      <Card className={`relative shadow-[10px_10px_0px_0px] rounded-3xl border-4 border-black ${colorMap?.[color]} p-6 gap-3`}>
-
-        {/* Title */}
-        <h2 className="text-2xl font-extrabold tracking-wide text-black">
-          IPL SUPER QUIZ 2026
-        </h2>
-
-        {/* Entry + Prize Row */}
-        <div className="flex gap-4 items-center">
-          {/* Entry Badge */}
-          <div className="bg-black font-extrabold! text-white px-4 py-2 rounded-xl text-sm">
-            ENTRY: ₹50
-          </div>
-
-          {/* Prize Box */}
-          <div className="flex-1 font-bold md:font-extrabold! border-2 border-black rounded-xl px-4 py-2 text-black bg-[#d9d9d9]">
-            PRIZE: ₹1,00,000
-          </div>
-        </div>
-
-        {/* Joined Row */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-black font-semibold text-sm">
-            <div className="flex items-center gap-2">
-              <Users size={16} />
-              {joined}/{total} JOINED
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-[800] uppercase text-black/60">
+                Prize:
+              </span>
+              <span className="text-[16px] font-[900]">
+                {prizePool}
+              </span>
             </div>
-            <span>{percentage}%</span>
           </div>
 
-          {/* Progress Bar */}
-          <div className="h-3 w-full bg-gray-400/30 rounded-full border-2 border-black overflow-hidden">
-            <div
-              className="h-full bg-black"
-              style={{ width: `${percentage}%` }}
-            />
+          <div
+            className="w-[48px] h-[48px] bg-black rounded-[10px] border-[3px] border-black 
+                       flex items-center justify-center flex-shrink-0"
+            style={{ boxShadow: "2px 2px 0px rgba(0,0,0,0.3)" }}
+          >
+            <ArrowRight className="w-6 h-6 stroke-[3px] text-white" />
           </div>
-        </div>
-
-        {/* Join Button */}
-        <Button className="w-full rounded-lg bg-black hover:bg-black text-white text-lg font-extrabold py-8 shadow-[4px_4px_0px_0px_var(--color-gray-600)]">
-          VIEW →
-        </Button>
+        </CardContent>
       </Card>
+    </Link>
   );
 }

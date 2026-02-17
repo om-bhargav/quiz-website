@@ -22,7 +22,17 @@ export async function GET() {
         dob: true,
         country: true,
         age: true,
-        isProfileComplete: true
+        isProfileComplete: true,
+        _count:{
+          select:{
+            registration: true,
+          }
+        },
+        wallet:{
+          select:{
+            balance: true
+          }
+        }
       }
     });
 

@@ -3,29 +3,25 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 export default function CustomSwiper({ children }: any) {
   return (
     <Swiper
       modules={[FreeMode]}
-      spaceBetween={16}
-      navigation
-      pagination={{ clickable: true }}
+      spaceBetween={15}
       grabCursor
       freeMode={{
         enabled: true,
         sticky: true, // 👈 important
       }}
       breakpoints={{
-        0: { slidesPerView: 1.5 },
-        648:{slidesPerView: 2}
+        0: { slidesPerView: 3 },
+        648: { slidesPerView: 4 },
       }}
-      className="w-full"
+      className="py-2! w-full justify-center items-center"
     >
       {Array.isArray(children) &&
         children.map((child, index) => (
-          <SwiperSlide className="h-full md:min-w-[210px]" key={index}>
+          <SwiperSlide className="w-full items-center flex justify-center max-md:max-w-[100px] md:max-w-[110px]!" key={index}>
             {child}
           </SwiperSlide>
         ))}
