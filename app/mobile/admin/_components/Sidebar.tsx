@@ -18,12 +18,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/constants";
+import { signOut } from "next-auth/react";
 const navItems = [
-  { name: "Dashboard", icon: LayoutDashboard, href: "/admin" },
-  { name: "Users Management", icon: Users, href: "/admin/users" },
-  { name: "Events Management", icon: Trophy, href: "/admin/events" },
-  { name: "Plans Management", icon: Box, href: "/admin/plans" },
-  // { name: "Artists", icon: UserLock, href: "/admin/artists" },
+  { name: "Dashboard", icon: LayoutDashboard, href: "/mobile/admin" },
+  { name: "Users", icon: Users, href: "/mobile/admin/users" },
+  { name: "Events", icon: Trophy, href: "/mobile/admin/events" },
+  { name: "Plans", icon: Box, href: "/mobile/admin/plans" },
+  { name: "Categories", icon: Box, href: "/mobile/admin/categories" },
 ];
 
 export default function Sidebar() {
@@ -36,15 +37,7 @@ export default function Sidebar() {
     .find((item) => pathname.startsWith(item.href));
 
   const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      router.push("/login");
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
+    await signOut({ redirect: true, callbackUrl: "/" });
   };
 
   const SidebarContent = () => (
@@ -71,7 +64,8 @@ export default function Sidebar() {
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
                     "w-full justify-start gap-3 rounded-lg text-sm font-medium",
-                    isActive && "hover:bg-primary/80 bg-primary/80 text-background"
+                    isActive &&
+                      "hover:bg-primary/80 bg-primary/80 text-background"
                   )}
                 >
                   <item.icon

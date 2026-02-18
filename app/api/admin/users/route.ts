@@ -18,6 +18,7 @@ export async function GET() {
         image: true,
         status: true,
         createdAt: true,
+        role: true,
         wallet: {
             select: { balance: true }
         },

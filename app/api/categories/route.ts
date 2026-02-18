@@ -11,6 +11,7 @@ export async function GET() {
         _count: {
           select: { tournaments: true } 
         }
+        ,subCategories: true
       }
     });
 

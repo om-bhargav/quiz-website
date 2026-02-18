@@ -35,10 +35,11 @@ const updateTournamentSchema = z.object({
   title: z.string().min(3).optional(),
   description: z.string().optional(),
   categoryId: z.string().min(1).optional(),
+  subCategoryId: z.string().min(1).optional(),
   startTime: z.string().transform((str) => new Date(str)).optional(),
   windowOpenTime: z.string().transform((str) => new Date(str)).optional(),
   durationPerQ: z.number().min(5).optional(),
-  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]).optional(),
+  difficulty: z.enum(["EASY", "MEDIUM", "HARD","EXPERT"]).optional(),
   entryFee: z.number().min(0).optional(),
   prizePool: z.number().min(0).optional(),
   totalQuestions: z.number().min(1).optional(),
@@ -82,7 +83,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!currentTournament) {
       return NextResponse.json({ success: false, message: "Tournament not found" }, { status: 404 });
     }
-
+    const subCategory = await prisma.subCategory.findUnique({
+      where:{
+        id: data.subCategoryId
+      }
+    });
+    if (!subCategory) {
+      return NextResponse.json({ success: false, message: "Subcategory not found" }, { status: 404 });
+    }
     const finalTotalSeats = data.totalSeats ?? currentTournament.totalSeats;
     const finalWinningSeats = data.winningSeats ?? currentTournament.winningSeats;
 
@@ -129,6 +137,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         title: data.title,
         description: data.description,
         categoryId: data.categoryId,
+        subCategoryId: data.subCategoryId,
         startTime: data.startTime,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,

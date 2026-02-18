@@ -3,9 +3,17 @@ import SectionLoader from "./SectionLoader";
 interface Props extends React.PropsWithChildren {
   loading: boolean;
   error: string;
+  emptyMessage: string;
+  dataLength: number;
 }
 
-export default function ErrorLoading({ children, loading, error }: Props) {
+export default function ErrorLoading({
+  children,
+  loading,
+  error,
+  emptyMessage,
+  dataLength,
+}: Props) {
   return (
     <div>
       {loading ? (
@@ -13,7 +21,12 @@ export default function ErrorLoading({ children, loading, error }: Props) {
       ) : error ? (
         <ErrorSection text={error} />
       ) : (
-        children
+        <>
+          {children}
+          {!dataLength && (
+            <div className="text-center my-4 font-semibold">{emptyMessage}</div>
+          )}
+        </>
       )}
     </div>
   );

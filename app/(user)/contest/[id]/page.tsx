@@ -187,7 +187,7 @@ export default function page() {
               Featured
             </div>
           </div>
-          <ErrorLoading error={error} loading={isLoading}>
+          <ErrorLoading error={error} loading={isLoading} dataLength={item ? 1:0} emptyMessage="Tournament Does Not Exist!">
             <QuizCard
             id={item.id}
             prizePool={item.prizePool}

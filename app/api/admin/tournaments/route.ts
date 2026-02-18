@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
         where: whereClause,
         orderBy: { createdAt: "desc" },
         include: {
-            category: true 
+            category: true,
+            subCategory: true
         }
     });
 
@@ -57,11 +58,12 @@ const tournamentSchema = z.object({
   title: z.string().min(3),
   description: z.string().optional(),
   categoryId: z.string().min(1, "Category is required"),
+  subCategoryId: z.string().min(1, "SubCategory is required"),
   startTime: z.string().transform((str) => new Date(str)),
   windowOpenTime: z.string().transform((str) => new Date(str)),
   durationPerQ: z.number().min(5),
   totalQuestions: z.number().min(1),
-  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
+  difficulty: z.enum(["EASY", "MEDIUM", "HARD","EXPERT"]),
   entryFee: z.number().min(0),
   prizePool: z.number().min(0),
   totalSeats: z.number().min(2, "Must have at least 2 seats"),
@@ -124,6 +126,7 @@ export async function POST(req: NextRequest) {
         description: data.description,
         categoryId: category.id,
         startTime: data.startTime,
+        subCategoryId: data.subCategoryId,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,
         totalQuestions: data.totalQuestions,

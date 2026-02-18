@@ -148,9 +148,9 @@ export default function LiveContests({ selected, setSelected }: Props) {
         </div>
       </div>
 
-      <ErrorLoading loading={isLoading} error={error}>
+      <ErrorLoading loading={isLoading} error={error} emptyMessage="No Tournaments Found!" dataLength={data?.tournaments?.length}>
         <div className="grid gap-5">
-          {data?.tournaments.length ? data?.tournaments?.map((quiz: any, index: number) => {
+          {data?.tournaments?.map((quiz: any, index: number) => {
             return (
               <QuizCard
                 key={quiz.id}
@@ -161,7 +161,7 @@ export default function LiveContests({ selected, setSelected }: Props) {
                 color={colors[index % n]}
               />
             );
-          }):<div className="text-center text-lg font-bold">No Tournaments Found!</div>}
+          })}
         </div>
       </ErrorLoading>
     </div>
