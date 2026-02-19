@@ -5,9 +5,11 @@ interface Props extends React.PropsWithChildren {
   error: string;
   emptyMessage: string;
   dataLength: number;
+  className?: string;
 }
 
 export default function ErrorLoading({
+  className,
   children,
   loading,
   error,
@@ -15,7 +17,7 @@ export default function ErrorLoading({
   dataLength,
 }: Props) {
   return (
-    <div>
+    <div className={className}>
       {loading ? (
         <SectionLoader />
       ) : error ? (

@@ -3,16 +3,19 @@ import React from "react";
 import { colorMap } from "@/lib/constants";
 import SpecialIcon from "@/components/SpecialIcon";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 interface Item {
   title: string;
   Icon: any;
   subtitle: string | null;
   color: string;
   action?: any;
+  link: string;
 }
 export default function MenuItemCard({ item,index }: { item: Item,index: number }) {
   const Icon = item.Icon;
   return (
+    <Link href={item.link}>
     <button
       key={index}
       onClick={item.action ? item.action :()=>{}}
@@ -40,5 +43,6 @@ export default function MenuItemCard({ item,index }: { item: Item,index: number 
       </div>
       <ChevronRight className="w-6 h-6 stroke-[3px]" />
     </button>
+    </Link>
   );
 }

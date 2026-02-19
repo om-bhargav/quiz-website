@@ -1,76 +1,71 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { PlanType } from "@/types/plan";
+import { WarningModal } from "@/components/WarningModal";
+import { PlanFormModal } from "./PlanModal";
+interface Props {
+  plan: PlanType;
+  loading: boolean;
+  onEdit?: any;
+  onDelete?: any;
+}
 
-export default function PlanCard() {
-  // 🔹 Dummy Plan Data
-  const plan = {
-    name: "Pro Plan",
-    price: 499,
-    billingCycle: "Monthly",
-    status: "ACTIVE", // ACTIVE | INACTIVE
-    features: [
-      "Unlimited Tournaments",
-      "Priority Support",
-      "Advanced Analytics",
-    ],
-    createdAt: new Date("2026-01-10"),
+export default function PlanCard({ plan, onEdit, onDelete ,loading}: Props) {
+  const statusColor = {
+    DRAFT: "bg-gray-500",
+    ACTIVATED: "bg-green-600",
+    DEACTIVATED: "bg-red-600",
   };
 
   return (
-    <Card className="rounded-xl shadow-sm hover:shadow-md transition">
-      <CardContent className="px-6 py-2 space-y-5">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-lg font-semibold">{plan.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              ₹{plan.price} / {plan.billingCycle}
-            </p>
-          </div>
+    <Card className="rounded-2xl shadow-sm hover:shadow-md transition">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="text-lg font-semibold">
+          {plan.title}
+        </CardTitle>
 
-          <Badge
-            variant={plan.status === "ACTIVE" ? "default" : "secondary"}
-          >
-            {plan.status}
-          </Badge>
+        <Badge className={`${statusColor[plan.status]} text-white`}>
+          {plan.status}
+        </Badge>
+      </CardHeader>
+
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          {plan.description}
+        </p>
+
+        <div className="flex justify-between text-sm font-medium">
+          <span>Tokens:</span>
+          <span>{plan.tokens.toLocaleString()}</span>
         </div>
 
-        {/* Features */}
-        <div className="space-y-2 text-sm">
-          {plan.features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>{feature}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Meta */}
-        <div className="text-xs text-muted-foreground">
-          Created on {plan.createdAt.toLocaleDateString()}
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-3 pt-2">
-          <Button variant="outline" className="flex-1">
-            Edit
-          </Button>
-
-          {plan.status === "ACTIVE" ? (
-            <Button variant="outline" className="flex-1 text-red-500">
-              Deactivate
-            </Button>
-          ) : (
-            <Button className="flex-1">
-              Activate
-            </Button>
-          )}
+        <div className="flex justify-between text-sm font-medium">
+          <span>Price:</span>
+          <span>₹ {plan.price.toLocaleString()}</span>
         </div>
       </CardContent>
+
+      <CardFooter className="flex justify-end gap-2">
+        <PlanFormModal loading={loading} mode="edit" plan={plan} onSuccess={onEdit}>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Edit
+        </Button>
+        </PlanFormModal>
+        <WarningModal onConfirm={() => onDelete?.(plan.id)} disabled={loading} variant="destructive">
+        <Button
+          variant="destructive"
+          size="sm"
+          >
+          Delete
+        </Button>
+          </WarningModal>
+      </CardFooter>
     </Card>
   );
 }

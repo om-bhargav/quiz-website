@@ -2,41 +2,68 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 interface Props {
-    title: string;
-    icon: React.ReactNode;
-    val: string;
-    rates: string;
-    isUp?: boolean;
+  title: string;
+  icon: React.ReactNode;
+  val: string;
+  rates?: string;
+  isUp?: boolean;
 }
 
-export function AnalyticCard({ title, icon, val, rates, isUp = true }: Props) {
-    return (
-        <div className="w-full max-w-[350px] h-44 bg-[#FFF8F1] rounded-2xl p-6 flex flex-col justify-between shadow-sm border border-orange-50/50">
-            {/* Top Row: Title and Icon */}
-            <div className="flex items-start justify-between">
-                <p className="text-[15px] font-medium text-gray-500/80">
-                    {title}
-                </p>
-                <div className="w-12 h-12 bg-[#FFECD9] rounded-lg flex items-center justify-center text-orange-500">
-                    {icon}
-                </div>
-            </div>
+export function AnalyticCard({
+  title,
+  icon,
+  val,
+  rates,
+  isUp = true,
+}: Props) {
+  return (
+    <div className="w-full h-48 bg-primary/5 rounded-2xl p-6 flex flex-col justify-between 
+      border border-primary/20 shadow-sm 
+      hover:shadow-md hover:-translate-y-[2px] transition-all duration-200">
 
-            {/* Bottom Section: Value and Rates */}
-            <div className="space-y-1">
-                <h2 className="text-4xl font-bold text-[#1A1A1A] leading-none tracking-wide">
-                    {val}
-                </h2>
-                <div className="flex items-center gap-1.5 text-sm">
-                    <span className={cn(
-                        "font-bold",
-                        isUp ? "text-emerald-500" : "text-rose-500"
-                    )}>
-                        {isUp ? "+" : ""}{rates}%
-                    </span>
-                    <span className="text-gray-400 font-medium">vs last week</span>
-                </div>
-            </div>
+      {/* Top Row */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+            {title}
+          </p>
+          <div className="mt-2 h-[2px] w-8 bg-primary/60 rounded-full" />
         </div>
-    );
+
+        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+          {icon}
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="space-y-2">
+        <div>
+          <h2 className="max-md:text-lg md:text-2xl font-bold break-all text-foreground leading-none tracking-tight">
+            {val}
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Total
+          </p>
+        </div>
+
+        {rates && (
+          <div className="flex items-center gap-1.5 text-sm">
+            <span
+              className={cn(
+                "font-bold",
+                isUp ? "text-green-500" : "text-destructive"
+              )}
+            >
+              {isUp ? "+" : ""}
+              {rates}%
+            </span>
+
+            <span className="text-muted-foreground font-medium">
+              vs last week
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

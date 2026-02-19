@@ -8,3 +8,10 @@ export const colorMap: any = {
   purple: "bg-[#A78BFA]"
 };
 export const SITE_NAME = "Quiz Management";
+
+export const difficultyColors: any = {
+  EASY: "bg-green-600",
+  MEDIUM: "bg-yellow-500",
+  HARD: "bg-red-500",
+  EXPERT: "bg-red-900",
+};

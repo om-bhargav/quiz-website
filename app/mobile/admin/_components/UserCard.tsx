@@ -5,15 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { WarningModal } from "@/components/WarningModal";
+import { EditBalanceModal } from "./EditBalance";
 
 export default function UserOverviewCard({
+  loading,
   user,
   handleDelete,
+  handleBalanceUpdate,
   handleStatusUpdate,
 }: {
+  loading: boolean;
   user: any;
   handleDelete: any;
   handleStatusUpdate: any;
+  handleBalanceUpdate: any;
 }) {
   return (
     <Card className="w-full! rounded-xl relative shadow-sm">
@@ -35,7 +41,7 @@ export default function UserOverviewCard({
         <div className="flex gap-2">
           <Badge variant="secondary">{user.role}</Badge>
 
-          <Badge variant={user.status === "ACTIVE" ? "default" : "destructive"}>
+          <Badge className={`${user.status === "ACTIVE" && "bg-green-500!"}`} variant={user.status === "ACTIVE" ? "default" : "destructive"}>
             {user.status}
           </Badge>
 
@@ -48,32 +54,49 @@ export default function UserOverviewCard({
         <div className="text-sm text-muted-foreground">
           Joined on {new Date(user.createdAt).toLocaleDateString()}
         </div>
-        <Button
-          onClick={async () => await handleDelete(user.id)}
-          variant={"ghost"}
-          size={"icon"}
-          className="absolute text-red-500 hover:text-red-500! right-3 top-3"
+        <WarningModal
+          disabled={loading}
+          onConfirm={async () => await handleDelete(user.id)}
+          variant="destructive"
         >
-          <Trash2 />
-        </Button>
-
+          <Button
+            variant={"ghost"}
+            size={"icon"}
+            className="absolute text-red-500 hover:text-red-500! right-3 top-3"
+          >
+            <Trash2 />
+          </Button>
+        </WarningModal>
         {/* Actions */}
         <div className="flex gap-3">
-          <Button variant="outline" className="flex-1">
-            Edit
-          </Button>
-
-          <Button
-            onClick={async () =>
-              await handleStatusUpdate(user.id,
+          <EditBalanceModal
+            disabled={loading}
+            user={user}
+            handleUpdate={handleBalanceUpdate}
+          >
+            <Button variant="outline" className="flex-1">
+              Edit
+            </Button>
+          </EditBalanceModal>
+          <WarningModal
+          disabled={loading}
+            onConfirm={async () =>
+              await handleStatusUpdate(
+                user.id,
                 user.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
               )
             }
-            variant={user.status === "ACTIVE" ? "outline" : "default"}
-            className={`flex-1 ${user.status === "ACTIVE" && "text-red-500!"}`}
+            variant="info"
           >
-            {user.status === "ACTIVE" ? "SUSPEND" : "ACTIVATE"}
-          </Button>
+            <Button
+              variant={user.status === "ACTIVE" ? "outline" : "default"}
+              className={`flex-1 ${
+                user.status === "ACTIVE" ? "text-red-500!":"bg-green-500!"
+              }`}
+            >
+              {user.status === "ACTIVE" ? "SUSPEND" : "ACTIVATE"}
+            </Button>
+          </WarningModal>
         </div>
       </CardContent>
     </Card>

@@ -29,8 +29,8 @@ export default function CategorySection({ selected, setSelected }: Props) {
         <div>categories</div>
         <div>⚡</div>
       </div>
-      <div className="w-full grid">
-        <ErrorLoading loading={isLoading} error={error} dataLength={data?.categories?.length} emptyMessage="No Categories Found!">
+      <div className="max-w-full grid">
+        <ErrorLoading className="overflow-hidden" loading={isLoading} error={error} dataLength={data?.categories?.length} emptyMessage="No Categories Found!">
           <CustomSwiper>
             {data?.categories && [{ name: "defaulttype" },...data?.categories].map(
               (cat: any, index: number) =>

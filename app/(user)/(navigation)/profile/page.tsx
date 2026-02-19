@@ -22,20 +22,40 @@ export default function page() {
   const { data, isLoading, error } = useSWR("/api/user/profile", fetcher);
 
   const menuItems = [
-    { Icon: Trophy, title: "Played Quiz", subtitle: data?.user?.wallet?.balance ?? 0, color: "amber" },
-    { Icon: Wallet, title: "Wallet", subtitle: data?.user?._count?.registration ?? 0, color: "green" },
+    {
+      Icon: Trophy,
+      title: "Played Quiz",
+      link: "/played-quiz",
+      subtitle: data?.user?.wallet?.balance ?? 0,
+      color: "amber",
+    },
+    {
+      Icon: Wallet,
+      title: "Wallet",
+      link: "/wallet",
+      subtitle: data?.user?._count?.registration ?? 0,
+      color: "green",
+    },
     {
       Icon: History,
       title: "Transaction History",
+      link: "/transactions",
       subtitle: null,
       color: "sky-blue",
     },
-    { Icon: CreditCard, title: "Withdraw", subtitle: null, color: "pink" },
+    {
+      Icon: CreditCard,
+      title: "Withdraw",
+      link: "/withdraw",
+      subtitle: null,
+      color: "pink",
+    },
     {
       Icon: LogOut,
       title: "Logout",
       subtitle: null,
       color: "yellow",
+      link: "#",
       action: () => {
         signOut({ redirect: true, callbackUrl: "/login" });
       },
@@ -56,7 +76,7 @@ export default function page() {
             <div className="h-20 w-20 md:h-30 md:w-30 relative rounded-xl overflow-hidden border-4 md:border-5 border-black shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]">
               <Avatar className="w-full h-full rounded-none bg-transparent">
                 <AvatarImage alt={"Loading"} src={"/trophfee.png"} />
-                <AvatarFallback className="bg-transparent font-bold text-lg text-black">
+                <AvatarFallback className="bg-transparent uppercase font-bold text-lg text-black">
                   <Suspense fallback={<SkeletonView />}>
                     <HandleLoading loading={isLoading}>
                       {data?.user?.name?.[0]}

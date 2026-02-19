@@ -2,6 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/checkAuth";
 
+export async function GET(req: NextRequest) {
+  try {
+
+    const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+      include: {
+        _count: {
+          select: { tournaments: true,subCategories: true } 
+        }
+        ,subCategories: true
+      }
+    });
+
+    return NextResponse.json({ success: true, categories });
+  } catch {
+    return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });
+  }
+}
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

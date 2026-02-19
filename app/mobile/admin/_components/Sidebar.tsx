@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -11,6 +11,7 @@ import {
   Box,
   Menu,
   Trophy,
+  Tags,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,11 @@ const navItems = [
   { name: "Users", icon: Users, href: "/mobile/admin/users" },
   { name: "Events", icon: Trophy, href: "/mobile/admin/events" },
   { name: "Plans", icon: Box, href: "/mobile/admin/plans" },
-  { name: "Categories", icon: Box, href: "/mobile/admin/categories" },
+  { name: "Categories", icon: Tags, href: "/mobile/admin/categories" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const activeItem = navItems
     .slice()
@@ -43,11 +43,11 @@ export default function Sidebar() {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-6 border-b">
+      <div className="flex items-center gap-3 px-6 py-4 pb-[8px] border-b">
         <div className="flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow">
           <Box className="h-6 w-6" />
         </div>
-        <h1 className="text-xl uppercase font-bold tracking-tight">
+        <h1 className="text-md uppercase font-bold tracking-tight">
           {SITE_NAME}
         </h1>
       </div>
@@ -65,7 +65,7 @@ export default function Sidebar() {
                   className={cn(
                     "w-full justify-start gap-3 rounded-lg text-sm font-medium",
                     isActive &&
-                      "hover:bg-primary/80 bg-primary/80 text-background"
+                      "hover:bg-primary bg-primary text-background"
                   )}
                 >
                   <item.icon

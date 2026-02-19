@@ -183,7 +183,12 @@ export default function page() {
             <div className="text-2xl font-extrabold uppercase">
               🏆 Highest Prizes
             </div>
-            <div className={`text-sm border-3 px-2 py-1 text-background shadow-[2px_2px_0px_0px_black]  border-black font-bold uppercase rounded-xl ${colorMap["purple"]}`}>
+            <div
+              className="bg-[#6366F1] text-white px-3 py-1 rounded-[8px] border-[2px] border-black text-[10px] font-[900] uppercase"
+              style={{
+                boxShadow: "2px 2px 0px #000000",
+              }}
+            >
               Featured
             </div>
           </div>
@@ -298,7 +303,7 @@ export function QuizCard({
 
             <div className="flex-1 bg-white/90 px-2 py-1 rounded-[6px] border-[2px] border-black">
               <span className="text-[11px] font-[800] uppercase">
-                Prize: {prizePool}
+                Prize: ₹{prizePool}
               </span>
             </div>
           </div>
@@ -359,20 +364,6 @@ export function QuizCard({
           {"Join Quiz →"}
         </Button>
       </CardContent>
-
-      {/* Spots Left Badge */}
-      {totalSeats - winningSeats <= 50 && (
-        <div
-          className="absolute -top-2 -right-2 bg-[#6366F1] text-white px-3 py-1
-                       rounded-[8px] border-[2px] border-black text-[10px]
-                       font-[900] uppercase rotate-3 z-20"
-          style={{
-            boxShadow: "3px 3px 0px #000000",
-          }}
-        >
-          {totalSeats - winningSeats} Spots Left!
-        </div>
-      )}
     </Card>
   );
 }

@@ -72,13 +72,36 @@ model Wallet {
   tokenLogs TokenHistory[] 
 }
 
+enum PLAN_STATUS{
+  DRAFT
+  ACTIVATED
+  DEACTIVATED
+}
+
+model Plan{
+  id String @id @default(uuid())
+  title String
+  description String
+  tokens Int
+  price Int
+  status PLAN_STATUS @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TRANSACTION_STATUS{
+  PENDING
+  CANCELLED
+  DONE  
+}
+
 model TransactionHistory {
   id String @id @default(uuid())
   walletId String
   paymentId String
   amount Float
   tokens Int
-  status String
+  status TRANSACTION_STATUS @default(PENDING)
   createdAt DateTime @default(now())
 
   wallet Wallet @relation(fields: [walletId], references: [id])
@@ -228,4 +251,10 @@ model Otp {
   code String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model LogTraffic{
+  id String @id @default(uuid())
+  date DateTime @unique
+  views Int @default(2)
 }

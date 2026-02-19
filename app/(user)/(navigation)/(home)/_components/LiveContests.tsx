@@ -142,7 +142,7 @@ export default function LiveContests({ selected, setSelected }: Props) {
         <div className="uppercase">ALL</div>
         <div className="flex gap-2 items-center">
           <div
-            className={`h-4 w-4 rounded-full animate-pulse ${colorMap["purple"]}`}
+            className={`h-3 w-3 rounded-full animate-pulse ${colorMap["purple"]}`}
           />{" "}
           LIVE
         </div>
@@ -159,6 +159,8 @@ export default function LiveContests({ selected, setSelected }: Props) {
                 index={index}
                 id={quiz.id}
                 color={colors[index % n]}
+                category={quiz.category}
+                totalSeats ={quiz.totalSeats}
               />
             );
           })}

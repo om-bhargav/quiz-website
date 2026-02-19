@@ -93,6 +93,7 @@ export default function page() {
           {data?.tournaments?.map((tournament: any) => {
             return (
               <TournamentCard
+                loading={pending}
                 setEditOpen={setEditOpen}
                 setInitialData={setInitialData}
                 tournament={tournament}

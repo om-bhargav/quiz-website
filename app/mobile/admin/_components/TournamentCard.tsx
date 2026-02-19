@@ -3,13 +3,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Sofa, Ticket, Trophy } from "lucide-react";
-import toast from "react-hot-toast";
-
-export default function TournamentCard({ tournament ,setEditOpen,setInitialData,handleDelete}: any) {
+import { BadgeIndianRupee, Calendar, Clock, Currency, Sofa, Ticket, Trophy } from "lucide-react";
+import { WarningModal } from "@/components/WarningModal";
+import { difficultyColors } from "@/lib/constants";
+export default function TournamentCard({ tournament ,setEditOpen,setInitialData,handleDelete,loading}:{
+  tournament: any ;
+  setEditOpen: any;
+  setInitialData: any;
+  handleDelete: any;
+  loading: boolean
+}) {
   const startTime = new Date(tournament?.startTime).toLocaleTimeString();
-  const startDate = new Date(tournament?.startTime).toLocaleDateString();
-
+  const startDate = new Date(tournament?.startTime).toLocaleDateString("en-GB").replaceAll("/","-");
   return (
     <Card className="rounded-xl w-full py-2 shadow-sm hover:shadow-md transition">
       <CardContent className="p-5 space-y-4">
@@ -17,10 +22,11 @@ export default function TournamentCard({ tournament ,setEditOpen,setInitialData,
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-lg font-semibold">{tournament.title}</h3>
-            <Badge>{tournament.difficulty}</Badge>
+            <Badge className={`${difficultyColors[tournament?.difficulty]}`}>{tournament.difficulty}</Badge>
           </div>
 
           <Badge
+            className={`animate-pulse ${tournament.status==="LIVE" && "bg-green-500"}`}
             variant={
               tournament.status === "LIVE"
                 ? "default"
@@ -68,6 +74,14 @@ export default function TournamentCard({ tournament ,setEditOpen,setInitialData,
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-muted-foreground">
               <Trophy className="h-4 w-4" />
+              Winning Seats
+            </span>
+            <span className="font-medium">{tournament.winningSeats}</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <BadgeIndianRupee className="h-4 w-4" />
               Prize Pool
             </span>
             <span className="font-medium">
@@ -81,17 +95,11 @@ export default function TournamentCard({ tournament ,setEditOpen,setInitialData,
           <Button variant="default" className="flex-1" onClick={()=>{setInitialData(tournament);setEditOpen(true)}}>
             Edit
           </Button>
-          <Button variant="outline" className="flex-1 text-red-500!" onClick={handleDelete}>
+          <WarningModal disabled={loading} onConfirm={handleDelete} variant="destructive">
+          <Button variant="outline" className="flex-1 text-red-500!">
             Delete
           </Button>
-
-          {/* {tournament.status === "DRAFT" ? (
-            <Button className="flex-1">Publish</Button>
-          ) : (
-            <Button variant="outline" className="flex-1 text-red-500!">
-              Close
-            </Button>
-          )} */}
+          </WarningModal>
         </div>
       </CardContent>
     </Card>
