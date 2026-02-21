@@ -28,7 +28,7 @@ export default function CompleteProfilePage() {
     handleSubmit,
     formState: { errors },
   } = useForm<ProfileForm>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema as any),
   });
 
   const onSubmit = async (data: ProfileForm) => {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkUser } from "@/lib/checkAuth";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function GET() {
   try {
@@ -17,8 +18,10 @@ export async function GET() {
           select: {
             id: true,
             title: true,
-            status: true,
-            totalQuestions: true
+            totalQuestions: true,
+            startTime: true,
+            endTime: true,
+            windowOpenTime: true
           }
         }
       }
@@ -27,7 +30,7 @@ export async function GET() {
     const formattedHistory = history.map(record => ({
       tournamentId: record.tournament.id,
       title: record.tournament.title,
-      status: record.tournament.status,
+      status: getTournamentStatus(record.tournament),
       score: `${record.score}/${record.tournament.totalQuestions}`,
       timeTaken: record.totalTime.toFixed(2) + "s",
       rank: record.rank ? `${record.rank}` : "Pending",

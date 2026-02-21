@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { User } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -47,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid password");
         }
 
-        return user;
+        return user as any
       },
     }),
   ],

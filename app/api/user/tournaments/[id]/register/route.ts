@@ -42,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // check if tournament is full
     const maxRealPlayers = tournament.totalSeats - tournament.winningSeats;
     if (tournament._count.registration >= maxRealPlayers) {
-      return NextResponse.json({ success: false, message: "No real players left" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "No players left" }, { status: 400 });
     }
 
     // check tokens

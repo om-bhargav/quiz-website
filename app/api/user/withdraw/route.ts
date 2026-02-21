@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
             amount: tokens,
             tokens: tokens,
             type: "DEBIT",
-            status: "SUCCESS",
+            status: "DONE",
             paymentId: uuid(),
             walletId: wallet.id 
         }

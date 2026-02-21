@@ -11,7 +11,7 @@ export async function GET() {
 
     const transactionHistory = await prisma.transactionHistory.findMany({
       where: { wallet: {userId: userId} ,status:{
-        in: ["SUCCESS","CANCELLED"]
+        in: ["DONE","CANCELLED"]
       }}
     });
 

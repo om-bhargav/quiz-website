@@ -71,7 +71,7 @@ model Wallet {
   tokenLogs TokenHistory[] 
 }
 
-enum PLAN_STATUS{
+enum PLAN_STATUS {
   DRAFT
   ACTIVATED
   DEACTIVATED
@@ -90,10 +90,8 @@ model Plan{
 
 enum TRANSACTION_STATUS{
 PENDING
-SUCCESS
-FAILED
+DONE
 CANCELLED
-REFUNDED
 }
 enum PAYMENT_TYPE{
   CREDIT

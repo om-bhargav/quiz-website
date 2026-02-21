@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,13 +20,13 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const error = searchParams.get("error");
+  // const error = searchParams.get("error");
 
-  if (error === "Suspended") {
-    toast.error("Your account has been suspended.", { id: "suspended" });
-  }
+  // if (error === "Suspended") {
+  //   toast.error("Your account has been suspended.", { id: "suspended" });
+  // }
 
   const {
     register,

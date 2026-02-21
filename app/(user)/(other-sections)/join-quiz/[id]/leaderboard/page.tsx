@@ -20,6 +20,7 @@ function formatTime(seconds: number) {
 export default function Page() {
   const { id } = useParams();
   const [ending, setEnding] = useState(false);
+  const [canFetchLeaderBoard, setCanFetchLeaderBoard] = useState(false);
   useEffect(() => {
     const updateData = async () => {
       setEnding(true);
@@ -35,12 +36,13 @@ export default function Page() {
         toast.error(error.message);
       } finally {
         setEnding(false);
+        setCanFetchLeaderBoard(true);
       }
     };
     updateData();
   }, []);
   const { data, isLoading, isValidating, error } = useSWR(
-    `/api/user/tournaments/${id}/leaderboard`,
+    canFetchLeaderBoard ? `/api/user/tournaments/${id}/leaderboard` : null,
     fetcher
   );
   const leaderboard = data?.leaderboard;

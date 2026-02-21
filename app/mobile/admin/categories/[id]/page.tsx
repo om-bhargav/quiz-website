@@ -127,6 +127,7 @@ export default function SubCategoriesPage({
             <SubCategoryCard
               key={sub.id}
               sub={sub}
+              pending={pending}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
@@ -156,9 +157,10 @@ type SubCategoryCardProps = {
   sub: SubCategory;
   onEdit: (sub: SubCategory) => void;
   onDelete: (id: string) => void;
+  pending: boolean;
 };
 
-function SubCategoryCard({ sub, onEdit, onDelete }: SubCategoryCardProps) {
+function SubCategoryCard({ sub, onEdit, onDelete,pending }: SubCategoryCardProps) {
   return (
     <Card className="rounded-2xl shadow-sm hover:shadow-md transition-all relative">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -168,7 +170,7 @@ function SubCategoryCard({ sub, onEdit, onDelete }: SubCategoryCardProps) {
           <Button size="icon" variant="outline" onClick={() => onEdit(sub)}>
             <Edit2 className="h-4 w-4" />
           </Button>
-          <WarningModal onConfirm={() => onDelete(sub.id)} variant="destructive">
+          <WarningModal disabled={pending} onConfirm={() => onDelete(sub.id)} variant="destructive">
           <Button
             size="icon"
             variant="outline"

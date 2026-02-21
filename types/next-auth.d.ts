@@ -6,16 +6,22 @@ declare module "next-auth/jwt" {
     id: string;
     role: string;
     username: string;
+    name: string;
     isProfileComplete: boolean;
+    email: string;
+    image: string;
   }
 }
 
-
 declare module "next-auth" {
   interface User {
+    id: string;
     role: string;
     username: string;
+    name: string;
     isProfileComplete: boolean;
+    email: string;
+    image: string;
   }
 
   interface Session {
@@ -23,7 +29,10 @@ declare module "next-auth" {
       id: string;
       role: string;
       username: string;
+      name: string;
       isProfileComplete: boolean;
+      email: string;
+      image: string;
     };
   }
 }

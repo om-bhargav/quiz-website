@@ -130,7 +130,7 @@ export default function Page() {
                   {/* STATUS BADGE */}
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-[6px] border-[2px] border-black text-[11px] font-[800] ${
-                      txn.status === "SUCCESS"
+                      txn.status === "DONE"
                         ? "bg-[#A5F3A0]"
                         : txn.status === "PENDING"
                         ? "bg-[#FFDB58]"
