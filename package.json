@@ -26,6 +26,7 @@
     "nodemailer": "^7.0.13",
     "prisma": "6.19",
     "radix-ui": "^1.4.3",
+    "razorpay": "^2.9.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
