@@ -80,7 +80,7 @@ export function AnalyticsSection() {
           // isUp={data.visitors.changePercent >= 0}
         />
       </div>
-      <div className="grid grid-cols-2 gap-5 space-y-4">
+      <div className="grid md:grid-cols-2 gap-5 space-y-4">
         <AnalyticChart
           weeklyData={data.weekly.users}
           monthlyData={data.monthly.users}
