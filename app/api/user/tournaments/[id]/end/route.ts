@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateExactBotNames } from "@/lib/botGenerator";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: tournamentId } = await params;
 
-    const tournament = await prisma.tournament.findUnique({ where: { id: tournamentId } });
-    if (!tournament) return NextResponse.json({ success: false, message: "Tournament not found" }, { status: 404 });
-
+    const exist = await prisma.tournament.findUnique({ where: { id: tournamentId } });
+    if (!exist) return NextResponse.json({ success: false, message: "Tournament not found" }, { status: 404 });
+    const tournament = {...exist,status: getTournamentStatus(exist)}
     if (tournament.status === "COMPLETED") {
       return NextResponse.json({ success: false, message: "Tournament already ended" }, { status: 400 });
     }
@@ -80,11 +81,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         if (botsToCreate.length > 0) {
             await tx.bots.createMany({ data: botsToCreate });
         }
-
-        await tx.tournament.update({
-            where: { id: tournamentId },
-            data: { status: "COMPLETED" }
-        });
 
         const allHumans = await tx.registration.findMany({
             where: { tournamentId, hasPaid: true },

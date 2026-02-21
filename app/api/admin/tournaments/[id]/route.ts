@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/checkAuth";
 import z from "zod";
 import { generateExactQuestions } from "@/lib/quizGenerator";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function GET( req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,7 +26,7 @@ export async function GET( req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ success: true, message: "Tournament not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: false, tournament }, { status: 200 });
+    return NextResponse.json({ success: false, tournament: {...tournament,status: getTournamentStatus(tournament)} }, { status: 200 });
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
@@ -39,13 +40,13 @@ const updateTournamentSchema = z.object({
   startTime: z.string().transform((str) => new Date(str)).optional(),
   windowOpenTime: z.string().transform((str) => new Date(str)).optional(),
   durationPerQ: z.number().min(5).optional(),
+  endTime: z.string().transform((str) => new Date(str)).optional(),
   difficulty: z.enum(["EASY", "MEDIUM", "HARD","EXPERT"]).optional(),
   entryFee: z.number().min(0).optional(),
   prizePool: z.number().min(0).optional(),
   totalQuestions: z.number().min(1).optional(),
   totalSeats: z.number().min(2).optional(),
   winningSeats: z.number().min(0).optional(),
-  status: z.enum(["DRAFT", "PUBLISHED", "LIVE", "COMPLETED"]).optional(),
 });
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -139,12 +140,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         categoryId: data.categoryId,
         subCategoryId: data.subCategoryId,
         startTime: data.startTime,
+        endTime: data.endTime,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,
         difficulty: data.difficulty,
         entryFee: data.entryFee,
         prizePool: data.prizePool,
-        status: data.status,
         totalQuestions: data.totalQuestions,
         totalSeats: data.totalSeats,
         winningSeats: data.winningSeats,

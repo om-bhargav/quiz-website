@@ -98,12 +98,13 @@ export default function page() {
         error={error}
         loading={loading || isValidating}
         dataLength={data?.categories?.length}
-        emptyMessage="No Categories Found"
+        emptyMessage="No Categories Found!"
       >
         <div className="grid xl:grid-cols-3 gap-5">
           {data?.categories?.map((category: any) => {
             return (
               <CategoryCard
+                loading={pending}
                 handleDelete={handleDelete}
                 handleEditOpen={handleEditOpen}
                 key={category.id}

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Edit2, Layers, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { WarningModal } from "@/components/WarningModal";
+import { useState } from "react";
 type Category = {
   id: string;
   name: string;
@@ -24,14 +25,17 @@ type Category = {
 };
 
 export default function CategoryCard({
+  loading,
   category,
   handleEditOpen,
   handleDelete,
 }: {
+  loading: boolean,
   category: Category;
   handleEditOpen: any;
   handleDelete: any;
 }) {
+
   return (
     <Card className="rounded-2xl relative shadow-sm hover:shadow-md transition-all">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -90,7 +94,7 @@ export default function CategoryCard({
             >
               <Edit2 />
             </Button>
-            <WarningModal onConfirm={()=>handleDelete(category.id)} variant="destructive">
+            <WarningModal disabled={loading} onConfirm={()=>handleDelete(category.id)} variant="destructive">
             <Button
               variant={"outline"}
               className="text-red-500!"

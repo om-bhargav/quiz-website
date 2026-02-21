@@ -2,12 +2,19 @@
 
 import React, { useState } from "react";
 import Wrapper from "../_components/Wrapper";
-import { Wallet, AlertCircle, CreditCard } from "lucide-react";
+import { Wallet, AlertCircle, CreditCard, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { fetcher } from "@/lib/fetcher";
+import useSWR from "swr";
+import { HandleSkeleton } from "../../(navigation)/profile/_components/HandleSkeleton";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 export default function Page() {
+  const router = useRouter();
+  const {data,isLoading: loading,error,mutate,isValidating} = useSWR("/api/user/wallet",fetcher);
   const [amount, setAmount] = useState("");
-  const balance = 5240;
+  const [pending,setPending] = useState(false);
+  const balance = data?.wallet?.balance;
   const minWithdraw = 100;
   const maxWithdraw = 50000;
 
@@ -34,10 +41,33 @@ export default function Page() {
       transition: { duration: 0.35, ease: "easeOut" },
     },
   };
-
+  const handleSubmit = async (e: React.SubmitEvent) => {
+    e.preventDefault()
+    setPending(true);
+    try{
+      const request = await fetch("/api/user/withdraw",{
+        method: "POST",
+        body:JSON.stringify({
+          tokens: amount
+        })
+      });
+      const response = await request.json();
+      if(!response.success){
+        throw Error(response.message);
+      }
+      toast.success(response.message);
+      setAmount("");
+      await mutate();
+    }catch(error: any){
+      toast.error(error.message);
+    }finally{
+      setPending(false)
+    }
+  };
   return (
     <Wrapper title="Withdraw">
-      <motion.div
+      <motion.form
+        onSubmit={handleSubmit}
         className="p-4 space-y-4"
         variants={container}
         initial="hidden"
@@ -53,9 +83,11 @@ export default function Page() {
             <Wallet className="w-5 h-5 stroke-[2.5px]" />
             <span className="text-[12px] font-[800] uppercase">Available</span>
           </div>
-          <p className="text-[28px] font-[900]">
-            ₹{balance.toLocaleString("en-IN")}
-          </p>
+          <div className="text-[28px] font-[900]">
+            <HandleSkeleton loading={loading || isValidating}>
+            ₹{balance}
+            </HandleSkeleton>
+          </div>
         </motion.div>
 
         {/* Amount Input */}
@@ -111,20 +143,23 @@ export default function Page() {
           variants={fadeUp}
           whileHover={canWithdraw ? { scale: 1.03 } : {}}
           whileTap={canWithdraw ? { scale: 0.97 } : {}}
-          type="button"
-          disabled={!canWithdraw}
+          type="submit"
+          disabled={pending || !canWithdraw}
           className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] tracking-wide flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] ${
-            canWithdraw
+            (canWithdraw && !pending)
               ? "bg-[#6366F1] text-white"
               : "bg-gray-300 text-black/50 cursor-not-allowed"
           }`}
         >
-          <CreditCard className="w-6 h-6" />
+          
+           {pending && <Loader2 size={20} className="animate-spin"/>}
+            <CreditCard className="w-6 h-6" />
           {canWithdraw
             ? `Withdraw ₹${numAmount.toLocaleString()}`
             : "Enter amount"}
+           
         </motion.button>
-      </motion.div>
+      </motion.form>
     </Wrapper>
   );
 }

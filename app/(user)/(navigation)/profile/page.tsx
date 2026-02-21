@@ -19,21 +19,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function page() {
-  const { data, isLoading, error } = useSWR("/api/user/profile", fetcher);
+  const { data, isLoading, error,isValidating } = useSWR("/api/user/profile", fetcher);
 
   const menuItems = [
     {
       Icon: Trophy,
       title: "Played Quiz",
       link: "/played-quiz",
-      subtitle: data?.user?.wallet?.balance ?? 0,
+      subtitle: data?.user?.tournamentsLength ?? 0,
       color: "amber",
     },
     {
       Icon: Wallet,
       title: "Wallet",
       link: "/wallet",
-      subtitle: data?.user?._count?.registration ?? 0,
+      subtitle: `₹${data?.user?.wallet?.balance ?? 0}`,
       color: "green",
     },
     {
@@ -78,7 +78,7 @@ export default function page() {
                 <AvatarImage alt={"Loading"} src={"/trophfee.png"} />
                 <AvatarFallback className="bg-transparent uppercase font-bold text-lg text-black">
                   <Suspense fallback={<SkeletonView />}>
-                    <HandleLoading loading={isLoading}>
+                    <HandleLoading loading={isLoading || isValidating}>
                       {data?.user?.name?.[0]}
                     </HandleLoading>
                   </Suspense>
@@ -88,12 +88,12 @@ export default function page() {
 
             <div className="grid gap-1 md:gap-3">
               <div className="text-lg md:text-2xl font-extrabold uppercase">
-                <HandleLoading loading={isLoading}>
+                <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.name}
                 </HandleLoading>
               </div>
               <div className="text-sm md:text-lg! lowercase break-all">
-                <HandleLoading loading={isLoading}>
+                <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.email}
                 </HandleLoading>
               </div>
@@ -105,7 +105,7 @@ export default function page() {
             <div className="flex flex-col items-center justify-between py-4 md:py-6 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
               <Clock strokeWidth={3} size={20} className="md:w-6 md:h-6" />
               <div className="font-extrabold text-lg md:text-2xl">
-                <HandleLoading loading={isLoading}>
+                <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.wallet?.balance}
                 </HandleLoading>
               </div>
@@ -117,8 +117,8 @@ export default function page() {
             <div className="flex flex-col items-center justify-between py-4 md:py-6 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
               <Trophy strokeWidth={3} size={20} className="md:w-6 md:h-6" />
               <div className="font-extrabold text-lg md:text-2xl">
-                <HandleLoading loading={isLoading}>
-                  {data?.user?._count?.registration}
+                <HandleLoading loading={isLoading || isValidating}>
+                  {data?.user?.tournamentsLength}
                 </HandleLoading>
               </div>
               <div className="uppercase text-xs md:text-sm text-muted-background font-bold">

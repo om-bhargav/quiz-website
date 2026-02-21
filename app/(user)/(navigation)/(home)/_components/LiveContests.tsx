@@ -161,6 +161,7 @@ export default function LiveContests({ selected, setSelected }: Props) {
                 color={colors[index % n]}
                 category={quiz.category}
                 totalSeats ={quiz.totalSeats}
+                seatsLeft={quiz.seatsLeft}
               />
             );
           })}

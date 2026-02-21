@@ -1,4 +1,4 @@
-import model from "@/lib/gemini";
+import {callGeminiWithRotation} from "@/lib/gemini";
 import { GenerateQuizPrompt } from "@/lib/prompts";
 
 interface QuizParams {
@@ -29,9 +29,7 @@ export async function generateExactQuestions(params: QuizParams) {
         requestCount, 
         difficulty
       );
-
-      const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
+      const responseText = await callGeminiWithRotation(prompt);
       
       const cleanedJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
       const newQuestions = JSON.parse(cleanedJson);

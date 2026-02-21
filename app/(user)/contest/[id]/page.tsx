@@ -200,7 +200,7 @@ export default function page() {
             index={0}
             difficulty={item?.difficulty?.toLowerCase()}
             totalSeats={item.totalSeats}
-            winningSeats={item.winningSeats}
+            seatsLeft={item.seatsLeft}
             questions={item.questions}
             title={item.title}
             />
@@ -243,7 +243,7 @@ interface QuizCardProps {
   entryFee: string;
   prizePool: string;
   totalSeats: number;
-  winningSeats: number
+  seatsLeft: number
   index: number;
   questions?: number;
   difficulty: "easy" | "medium" | "hard" | "expert";
@@ -262,7 +262,7 @@ export function QuizCard({
   entryFee,
   prizePool,
   totalSeats,
-  winningSeats,
+  seatsLeft,
   index,
   questions = 10,
   difficulty = "medium",
@@ -271,7 +271,7 @@ export function QuizCard({
 
   const percentage = useMemo(() => {
     if (!totalSeats) return 0;
-    return Math.min(100, (winningSeats / totalSeats) * 100);
+    return Math.min(100, ((totalSeats-seatsLeft) / totalSeats) * 100);
   }, [totalSeats]);
 
   const rotation = index % 2 === 0 ? "-0.6deg" : "0.6deg";
@@ -315,7 +315,7 @@ export function QuizCard({
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4 stroke-[2.5px]" />
               <span className="text-[11px] font-[800] uppercase">
-                {winningSeats}/{totalSeats} Joined
+                {(totalSeats-seatsLeft)}/{totalSeats} Joined
               </span>
             </div>
             <span className="text-[11px] font-[800] uppercase">
@@ -354,15 +354,17 @@ export function QuizCard({
         </div>
 
         {/* Button */}
+        <Link href={`/join-quiz/${id}`}>
         <Button
           className="w-full bg-gray-800 hover:bg-black text-white py-7 text-xl rounded-[10px]
-                       border-[3px] border-black uppercase font-[900] text-[14px]"
+          border-[3px] border-black uppercase font-[900] text-[14px]"
           style={{
             boxShadow: "4px 4px 0px rgba(0,0,0,0.3)",
           }}
-        >
+          >
           {"Join Quiz →"}
         </Button>
+          </Link>
       </CardContent>
     </Card>
   );

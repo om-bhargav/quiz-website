@@ -1,14 +1,17 @@
-"use client"
+"use client";
 
-import React from "react"
-import Wrapper from "../_components/Wrapper"
-import { Coins, Plus, TrendingUp, Wallet } from "lucide-react"
-import Link from "next/link"
-import { motion } from "framer-motion"
+import React from "react";
+import Wrapper from "../_components/Wrapper";
+import { Coins, Plus, TrendingUp, Wallet } from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import { HandleSkeleton } from "../../(navigation)/profile/_components/HandleSkeleton";
 
 export default function Page() {
-  const balance = 5240
-  const tokens = 2450
+  const balance = 5240;
+  const tokens = 2450;
 
   // Container for stagger animation
   const container = {
@@ -18,7 +21,7 @@ export default function Page() {
         staggerChildren: 0.12,
       },
     },
-  }
+  };
 
   // Reusable card animation
   const fadeUp: any = {
@@ -28,8 +31,8 @@ export default function Page() {
       y: 0,
       transition: { duration: 0.4, ease: "easeOut" },
     },
-  }
-
+  };
+  const { data, isLoading, error,isValidating } = useSWR("/api/user/wallet", fetcher);
   return (
     <Wrapper title="Wallet">
       <motion.div
@@ -51,9 +54,11 @@ export default function Page() {
               Available Balance
             </span>
           </div>
-          <p className="text-[32px] font-[900] mb-1">
-            ₹{balance.toLocaleString("en-IN")}
-          </p>
+          <div className="text-[32px] font-[900] mb-1">
+            <HandleSkeleton loading={isLoading || isValidating}>
+              ₹{data?.wallet?.balance.toLocaleString("en-IN")}
+            </HandleSkeleton>
+          </div>
           <p className="text-[12px] font-[700] text-black/60">
             Use for contest entry & withdrawals
           </p>
@@ -75,9 +80,11 @@ export default function Page() {
                 <p className="text-[14px] font-[800] uppercase text-black/70">
                   Tokens
                 </p>
-                <p className="text-[22px] font-[900]">
-                  {tokens.toLocaleString()}
-                </p>
+                <div className="text-[22px] font-[900]">
+                  <HandleSkeleton loading={isLoading || isValidating}>
+                    ₹{data?.wallet?.balance?.toLocaleString()}
+                  </HandleSkeleton>
+                </div>
               </div>
             </div>
             <span className="text-[11px] font-[700] text-black/60">
@@ -93,10 +100,7 @@ export default function Page() {
           </h2>
 
           <div className="grid grid-cols-2 gap-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={"/add-money"}
                 className="rounded-[14px] border-[3px] border-black p-4 bg-[#A5F3FC] flex items-center gap-3"
@@ -109,10 +113,7 @@ export default function Page() {
               </Link>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href={"/withdraw"}
                 className="rounded-[14px] border-[3px] border-black p-4 bg-[#A78BFA] flex items-center gap-3"
@@ -128,5 +129,5 @@ export default function Page() {
         </motion.div>
       </motion.div>
     </Wrapper>
-  )
+  );
 }

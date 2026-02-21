@@ -89,7 +89,7 @@ export default function page() {
         loading={loading || isValidating}
         error={error}
         dataLength={data?.plans?.length}
-        emptyMessage="No Tournaments Exist!"
+        emptyMessage="No Plans Added!"
       >
         <div className="grid xl:grid-cols-3 gap-5">
           {data?.plans?.map((plan: any) => {

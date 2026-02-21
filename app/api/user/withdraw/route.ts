@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkUser } from "@/lib/checkAuth";
-import {z} from "zod";
-
+import { z} from "zod";
+import {v4 as uuid} from "uuid";
 const withdrawalSchema = z.object({
   tokens: z.coerce.number().min(100),
 });
@@ -33,15 +33,27 @@ export async function POST(req: NextRequest) {
     if(balance<tokens){
         return NextResponse.json({ success: false, message: "Balance Should Be More Than Withdrawal Amount!" }, { status: 404 });
     }
+    await prisma.wallet.update({
+      where:{
+        userId: userId
+      },
+      data:{
+        balance:{
+          decrement: tokens
+        }
+      }
+    })
     await prisma.transactionHistory.create({
         data:{
             amount: tokens,
             tokens: tokens,
-            paymentId: "ThisisId",
+            type: "DEBIT",
+            status: "SUCCESS",
+            paymentId: uuid(),
             walletId: wallet.id 
         }
     });
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true, message: "Tokens Withdrawal Request Sent!" }, { status: 200 });
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }

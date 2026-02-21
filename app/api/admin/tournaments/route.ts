@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/checkAuth";
 import { z } from "zod";
 import { generateExactQuestions } from "@/lib/quizGenerator";
-
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 export async function GET(req: NextRequest) {
   try {
     const admin = await checkAdmin();
@@ -34,10 +34,6 @@ export async function GET(req: NextRequest) {
       whereClause.categoryId = categoryId;
     }
 
-    if (status) {
-      whereClause.status = status as "DRAFT" | "PUBLISHED" | "LIVE" | "COMPLETED";
-    }
-
     const tournaments = await prisma.tournament.findMany({
         where: whereClause,
         orderBy: { createdAt: "desc" },
@@ -46,8 +42,14 @@ export async function GET(req: NextRequest) {
             subCategory: true
         }
     });
-
-    return NextResponse.json({ success: true, count: tournaments.length, tournaments }, { status: 200 });
+    let filteredResults = tournaments.map((tournament)=>({
+      ...tournament,
+      status: getTournamentStatus(tournament)
+    }));
+    if(status){
+      filteredResults = filteredResults.filter((tournament)=>tournament.status===status);
+    }
+    return NextResponse.json({ success: true, count: tournaments.length, tournaments:filteredResults }, { status: 200 });
 
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
@@ -60,6 +62,7 @@ const tournamentSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().min(1, "SubCategory is required"),
   startTime: z.string().transform((str) => new Date(str)),
+  endTime: z.string().transform((str) => new Date(str)),
   windowOpenTime: z.string().transform((str) => new Date(str)),
   durationPerQ: z.number().min(5),
   totalQuestions: z.number().min(1),
@@ -127,6 +130,7 @@ export async function POST(req: NextRequest) {
         categoryId: category.id,
         startTime: data.startTime,
         subCategoryId: data.subCategoryId,
+        endTime: data.endTime,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,
         totalQuestions: data.totalQuestions,
@@ -135,7 +139,6 @@ export async function POST(req: NextRequest) {
         prizePool: data.prizePool,
         totalSeats: data.totalSeats,
         winningSeats: data.winningSeats,
-        status: "DRAFT",
         questions: {
           create: generatedQuestions.map((q: any) => ({
             text: q.text,

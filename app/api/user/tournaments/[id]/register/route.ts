@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ success: false, message: "Registration is not open yet" }, { status: 400 });
     }
 
-    const registrationDeadline = new Date(tournament.startTime.getTime() - 15 * 60 * 1000);
+    const registrationDeadline = new Date(tournament.startTime.getTime());
 
     if (now > registrationDeadline) {
       return NextResponse.json({ success: false, message: "Registration closed (Must join 15 mins before start)" }, { status: 400 });

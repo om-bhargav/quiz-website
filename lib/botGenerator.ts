@@ -1,4 +1,4 @@
-import model from "@/lib/gemini";
+import {callGeminiWithRotation} from "@/lib/gemini";
 import { GenerateBotNamesPrompt } from "@/lib/prompts";
 
 export async function generateExactBotNames(count: number): Promise<string[]> {
@@ -13,8 +13,7 @@ export async function generateExactBotNames(count: number): Promise<string[]> {
 
     try {
       const prompt = GenerateBotNamesPrompt(requestCount);
-      const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
+      const responseText = await callGeminiWithRotation(prompt);
       
       const cleanedJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
       const newNames = JSON.parse(cleanedJson);

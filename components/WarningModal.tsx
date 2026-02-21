@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { AlertTriangle, Info, Trash2 } from "lucide-react";
 
 type Variant = "destructive" | "warning" | "info";
@@ -29,7 +29,7 @@ export function WarningModal({
   variant = "destructive",
   onConfirm,
   children,
-  disabled
+  disabled,
 }: WarningModalProps) {
   const variantConfig = {
     destructive: {
@@ -59,11 +59,11 @@ export function WarningModal({
       button: "bg-blue-600 hover:bg-blue-700",
     },
   };
-
+  const [open, setOpen] = useState(false);
   const current = variantConfig[variant];
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 
       <AlertDialogContent className="w-[95%] sm:max-w-md rounded-2xl p-6">
@@ -87,7 +87,15 @@ export function WarningModal({
           </AlertDialogCancel>
 
           <AlertDialogAction
-            onClick={async () => await onConfirm() }
+            onClick={async (e) => {
+              e.preventDefault();
+              try {
+                await onConfirm();
+                setOpen(true);
+              } catch (error: any) {
+                console.error(error.message);
+              }
+            }}
             disabled={disabled}
             className={cn(
               "w-full sm:w-auto text-white transition-all",

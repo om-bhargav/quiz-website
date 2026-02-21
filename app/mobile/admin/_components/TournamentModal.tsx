@@ -30,10 +30,10 @@ type TournamentFormValues = {
   subCategoryId: string;
   startTime: string;
   windowOpenTime: string;
+  endTime: string;
   durationPerQ: number;
   totalQuestions: number;
   difficulty: string;
-  status: string;
   totalSeats: number;
   winningSeats: number;
   entryFee: number;
@@ -55,10 +55,10 @@ const defaultValues: TournamentFormValues = {
   subCategoryId: "",
   startTime: "",
   windowOpenTime: "",
+  endTime: "",
   durationPerQ: 0,
   totalQuestions: 0,
   difficulty: "EASY",
-  status: "DRAFT",
   totalSeats: 0,
   winningSeats: 0,
   entryFee: 0,
@@ -75,6 +75,7 @@ const inputFields = [
     name: "windowOpenTime",
     type: "datetime-local",
   },
+  { label: "End Time", name: "endTime", type: "datetime-local" },
   {
     label: "Duration Per Question",
     name: "durationPerQ",
@@ -120,6 +121,7 @@ export default function TournamentModal({
       ...initialData,
       startTime: formatDateTimeLocal(initialData.startTime),
       windowOpenTime: formatDateTimeLocal(initialData.windowOpenTime),
+      endTime: formatDateTimeLocal(initialData.endTime),
     });
       const selectedCategory = data?.categories?.find(
         (c: any) => c.id === initialData.categoryId
@@ -200,7 +202,7 @@ export default function TournamentModal({
               <Select
                 name="categoryId"
                 value={formData.categoryId}
-                disabled={isLoading}
+                disabled={isLoading || data?.categories?.length===0}
                 onValueChange={(val) => {
                   handleChange("categoryId", val);
                   const selected = data?.categories?.find(
@@ -265,7 +267,7 @@ export default function TournamentModal({
             ))}
 
             {/* Status */}
-            {initialData && (
+            {/* {initialData && (
               <div className="space-y-2 col-span-2">
                 <label className="text-sm font-medium">Status</label>
                 <Select
@@ -284,7 +286,7 @@ export default function TournamentModal({
                   </SelectContent>
                 </Select>
               </div>
-            )}
+            )} */}
             <DialogFooter className="col-span-2 mt-4">
               <Button disabled={pending} type="submit" className="w-full">
                 {

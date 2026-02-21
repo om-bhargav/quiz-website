@@ -14,6 +14,7 @@ interface HomeQuizCardProps {
   color: string; // 🔥 now required from props
   category: any;
   totalSeats: any;
+  seatsLeft: number;
 }
 
 export default function HomeQuizCard({
@@ -23,7 +24,8 @@ export default function HomeQuizCard({
   index,
   color,
   category,
-  totalSeats
+  totalSeats,
+  seatsLeft
 }: HomeQuizCardProps) {
   // const slug = useMemo(
   //   () => title.toLowerCase().replace(/\s+/g, "-"),
@@ -65,7 +67,7 @@ export default function HomeQuizCard({
                 <span className="text-md font-bold uppercase">
                   <Users size={20}/>
                 </span>
-                <span className="text-md font-bold">0 / {totalSeats} Played</span>
+                <span className="text-md font-bold">{totalSeats-seatsLeft} / {totalSeats} Played</span>
               </div>
             </div>
           </div>

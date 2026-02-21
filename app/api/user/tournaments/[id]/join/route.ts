@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkUser } from "@/lib/checkAuth";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const { id: tournamentId } = await params;
 
-    const tournament = await prisma.tournament.findUnique({
+    const exist = await prisma.tournament.findUnique({
       where: { id: tournamentId },
       include: {
         questions: {
@@ -25,14 +26,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     });
 
-    if (!tournament) {
+    if (!exist) {
       return NextResponse.json({ success: false, message: "Tournament Not Found" }, { status: 404 });
     }
-
+    const tournament = {...exist,status: getTournamentStatus(exist)}
     const registration = await prisma.registration.findUnique({
       where: { userId_tournamentId: { userId, tournamentId } }
     });
-
+    
     if (!registration || !registration.hasPaid) {
       return NextResponse.json({ success: false, message: "Not registered" }, { status: 403 });
     }
@@ -59,10 +60,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     if (tournament.status === "PUBLISHED" && now >= tournament.startTime) {
-      await prisma.tournament.update({
-        where: { id: tournament.id },
-        data: { status: "LIVE" }
-      });
+
       tournament.status = "LIVE"; 
     }
 
