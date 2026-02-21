@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/checkAuth";
 import z from "zod";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,14 +25,15 @@ export async function GET(req: NextRequest) {
     const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },
       include: {
-        _count: {
-          select: { tournaments: true, subCategories: true },
-        },
+        tournaments: true,
         subCategories: true,
       },
     });
-
-    return NextResponse.json({ success: true, categories });
+    const finalCategories = categories.map(({tournaments,...rest})=>{
+      const tournamentsSize = tournaments.filter((tournament)=>["PUBLISHED","LIVE"].includes(getTournamentStatus(tournament)))?.length ?? 0;
+      return {...rest,tournamentsSize}
+    });
+    return NextResponse.json({ success: true, categories: finalCategories });
   } catch {
     return NextResponse.json(
       { success: false, message: "Server Error" },

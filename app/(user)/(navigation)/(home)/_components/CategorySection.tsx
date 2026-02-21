@@ -42,7 +42,7 @@ export default function CategorySection({ selected, setSelected }: Props) {
                     id={"all"}
                     selected={selected === "all"}
                     color={colors[2]}
-                    eventsCount={data.categories.reduce((acc: number,item: any)=>acc+(item?._count?.tournaments ?? 0),0)}
+                    eventsCount={data.categories.reduce((acc: number,item: any)=>acc+(item?.tournamentsSize ?? 0),0)}
                   />
                 ) : (
                   <CategoryCard
@@ -52,7 +52,7 @@ export default function CategorySection({ selected, setSelected }: Props) {
                     onClick={() => setSelected(cat.id)}
                     name={cat.name}
                     image={cat.image}
-                    eventsCount={cat._count.tournaments}
+                    eventsCount={cat?.tournamentsSize}
                     color={colors[index % colors.length]}
                   />
                 )

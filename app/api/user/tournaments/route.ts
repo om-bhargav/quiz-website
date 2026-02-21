@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const filter = searchParams.get("filter");
     const search = searchParams.get("search");
     const categoryId = searchParams.get("categoryId");
-    const defaultStatus = ["LIVE"];
+    const defaultStatus = ["LIVE","PUBLISHED"];
     if (filter) {
       defaultStatus.push(filter);
     }
