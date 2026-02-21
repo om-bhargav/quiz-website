@@ -57,7 +57,7 @@ export async function GET() {
       },
     });
 
-    const totalRevenue = tournaments.reduce((acc, t) => {
+    const totalRevenue = tournaments.reduce((acc: number, t: any) => {
       return acc + t.entryFee * t.registration.length;
     }, 0);
 
