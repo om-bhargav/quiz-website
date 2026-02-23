@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
     const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },
       include: {
+        _count: {
+          select: { tournaments: true, subCategories: true },
+        },
         tournaments: true,
         subCategories: true,
       },
