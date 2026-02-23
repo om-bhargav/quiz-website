@@ -27,6 +27,10 @@ export async function GET(req: NextRequest) {
       include: {
         tournaments: true,
         subCategories: true,
+_count: {
+          select: { tournaments: true, subCategories: true },
+        },
+       
       },
     });
     const finalCategories = categories.map(({tournaments,...rest})=>{
