@@ -23,7 +23,7 @@ const SLIDES = [
     title: "Join & win real cash",
     prize: "₹50 – ₹10L",
     sub: "Play now, pay entry, win big",
-    image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e2c?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?w=400&q=80",
   },
 ];
 

@@ -118,27 +118,8 @@ export default function Login() {
                 <p className="text-[13px] font-[800] uppercase">{error}</p>
               </div>
             )}
-
-            {/* Button */}
-            {/* <button
-              type="submit"
-              className="w-full bg-[#A5F3A0] text-black py-4 rounded-[12px] border-[4px] border-black uppercase font-[900] text-[16px] tracking-wide hover:translate-y-[2px] transition-transform"
-              style={{ boxShadow: "5px 5px 0px #000000" }}
-            >
-              Login →
-            </button> */}
             <NextButton disabled={loading} text={"Login →"} bgClass="bg-[#A5F3A0]" />
           </form>
-
-          {/* Demo */}
-          {/* <div
-            className="mt-4 bg-[#FFDB58]/30 p-3 rounded-[10px] border-[2px] border-black"
-            style={{ boxShadow: "2px 2px 0px #000000" }}
-          >
-            <p className="text-[11px] font-[800] uppercase text-black/70 text-center">
-              Demo: user@example.com / user123
-            </p>
-          </div> */}
 
           {/* Signup */}
           <div className="mt-6 text-center">

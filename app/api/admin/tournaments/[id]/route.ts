@@ -21,11 +21,9 @@ export async function GET( req: NextRequest, { params }: { params: Promise<{ id:
         category: true
       }
     });
-
     if (!tournament) {
       return NextResponse.json({ success: true, message: "Tournament not found" }, { status: 404 });
     }
-
     return NextResponse.json({ success: false, tournament: {...tournament,status: getTournamentStatus(tournament)} }, { status: 200 });
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });

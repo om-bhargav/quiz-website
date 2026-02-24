@@ -179,6 +179,7 @@ model Tournament {
   category Category @relation(fields: [categoryId], references: [id],onDelete: Cascade)
   subCategory SubCategory @relation(fields: [subCategoryId],references: [id],onDelete: Cascade)
   questions Question[]
+  leaderboardCalculated Boolean @default(false)
   registration Registration[]
   bots Bots[]
 }

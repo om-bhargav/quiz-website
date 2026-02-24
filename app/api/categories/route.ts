@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
         subCategories: true,
       },
     });
-    const finalCategories = categories.map(({tournaments,...rest})=>{
+    const finalCategories = categories?.map(({tournaments,...rest})=>{
       const tournamentsSize = tournaments.filter((tournament)=>["PUBLISHED","LIVE"].includes(getTournamentStatus(tournament)))?.length ?? 0;
       return {...rest,tournamentsSize}
     });

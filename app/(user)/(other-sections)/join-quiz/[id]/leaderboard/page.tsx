@@ -33,7 +33,7 @@ export default function Page() {
           throw Error(response.message);
         }
       } catch (error: any) {
-        toast.error(error.message);
+        // toast.error(error.message);
       } finally {
         setEnding(false);
         setCanFetchLeaderBoard(true);
@@ -74,7 +74,7 @@ export default function Page() {
                 const isFirst = index === 0;
                 return (
                   <motion.div
-                    key={player.rank}
+                    key={index}
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.2 }}
@@ -128,7 +128,7 @@ export default function Page() {
           <div className="rounded-[14px] border-[3px] border-black bg-white overflow-hidden shadow-[5px_5px_0px_#000]">
             {rest?.map((player: any, index: number) => (
               <motion.div
-                key={player.rank}
+                key={index}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}

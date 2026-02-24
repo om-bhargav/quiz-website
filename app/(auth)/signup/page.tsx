@@ -47,7 +47,6 @@ export default function Signup() {
       const fields = Object.keys(data);
       for (let field of fields) {
         if (!data[field]) {
-          console.log(field);
           throw Error("Please Fill All the required Fields");
         }
       }

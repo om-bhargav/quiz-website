@@ -10,8 +10,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const exist = await prisma.tournament.findUnique({ where: { id: tournamentId } });
     if (!exist) return NextResponse.json({ success: false, message: "Tournament not found" }, { status: 404 });
     const tournament = {...exist,status: getTournamentStatus(exist)}
-    if (tournament.status === "COMPLETED") {
-      return NextResponse.json({ success: false, message: "Tournament already ended" }, { status: 400 });
+    if (tournament.leaderboardCalculated) {
+      return NextResponse.json({ success: false, message: "Leaderboard Already Calculated!" }, { status: 400 });
     }
 
     const topHuman = await prisma.registration.findFirst({
@@ -95,8 +95,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                 data: { rank: startRank + i }
             })
         ));
+        await tx.tournament.update({
+            where:{
+                id: tournamentId
+            },
+            data:{
+                leaderboardCalculated: true
+            }
+        })
     });
-
     return GET_LEADERBOARD(tournamentId);
 
   } catch {

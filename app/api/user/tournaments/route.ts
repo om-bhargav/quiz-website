@@ -43,8 +43,10 @@ export async function GET(req: NextRequest) {
       },
     });
     const formatted = tournaments
-      ?.map(({ winningSeats, _count, ...rest }) => ({
+      ?.map(({ winningSeats,entryFee,prizePool, _count, ...rest }) => ({
         ...rest,
+        prizePool: Math.round(prizePool),
+        entryFee: Math.round(entryFee),
         status: getTournamentStatus({ ...rest }),
         seatsLeft: rest.totalSeats - winningSeats - _count.registration,
       }))

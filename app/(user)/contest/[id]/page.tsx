@@ -130,7 +130,7 @@ export default function page() {
           className={`min-h-[100px] flex flex-col p-4 flex justify-between ${colorMap["amber"]} border-b-8 border-black w-full`}
         >
           <div className="flex justify-between flex-1 gap-4 items-center">
-            <Link href={"/"} className="w-[100px]">
+            <Link href={"/"}>
               <SpecialIcon Icon={ArrowLeft} />
             </Link>
             <span className="text-lg md:text-2xl font-extrabold uppercase md:whitespace-nowrap">
@@ -198,7 +198,7 @@ export default function page() {
             prizePool={item.prizePool}
             entryFee={item.entryFee}
             index={0}
-            difficulty={item?.difficulty?.toLowerCase()}
+            difficulty={item?.difficulty}
             totalSeats={item.totalSeats}
             seatsLeft={item.seatsLeft}
             questions={item.questions}
@@ -210,27 +210,30 @@ export default function page() {
       <div className="grid gap-4 mx-3">
         <div>
           <div className="uppercase text-2xl font-extrabold">
-            MORE CONTESTS (0)
+            MORE CONTESTS ({data?.recommendations?.length ?? 0})
           </div>
         </div>
         <div className="grid gap-6">
-          {/* {quizzes.map((quiz) => {
+          <ErrorLoading error={error} loading={isLoading} dataLength={data?.recommendations?.length} emptyMessage="No Related Tournaments Found!">
+          {data?.recommendations?.map((quiz: any,index: number) => {
             return (
               quiz.id !== item.id && (
                 <QuizCard
+                  seatsLeft={quiz.seatsLeft}
+                  totalSeats={quiz.totalSeats}
                   key={quiz.id}
                   id={quiz.id}
                   prizePool={quiz.prizePool}
                   entryFee={quiz.entryFee}
-                  index={0}
-                  difficulty={"Expert"}
-                  participants={quiz.participants}
-                  questions={10}
+                  index={index}
+                  difficulty={quiz.difficulty}
+                  questions={quiz.totalQuestions}
                   title={quiz.title}
                 />
               )
             );
-          })} */}
+          })}
+          </ErrorLoading>
         </div>
       </div>
     </div>
@@ -246,14 +249,14 @@ interface QuizCardProps {
   seatsLeft: number
   index: number;
   questions?: number;
-  difficulty: "easy" | "medium" | "hard" | "expert";
+  difficulty: "EASY" | "MEDIUM" | "HARD" | "EXPERT";
 }
 
 const difficultyColors = {
-  easy: "green",
-  medium: "amber",
-  hard: "pink",
-  expert: "purple",
+  EASY: "green",
+  MEDIUM: "amber",
+  HARD: "pink",
+  EXPERT: "purple",
 };
 const colors = Object.values(difficultyColors);
 export function QuizCard({
@@ -265,7 +268,7 @@ export function QuizCard({
   seatsLeft,
   index,
   questions = 10,
-  difficulty = "medium",
+  difficulty = "MEDIUM",
 }: QuizCardProps) {
   const slug = useMemo(() => title.toLowerCase().replace(/\s+/g, "-"), [title]);
 
@@ -275,12 +278,12 @@ export function QuizCard({
   }, [totalSeats]);
 
   const rotation = index % 2 === 0 ? "-0.6deg" : "0.6deg";
-
   const color = difficultyColors[difficulty];
+  const colors = Object.values(colorMap);
   return (
     <Card
       className={`relative my-4 p-4 rounded-[14px] border-[3px] border-black overflow-hidden
-                   transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] ${colorMap[color]}`}
+                   transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] ${colors[Math.floor(Math.random()* colors.length)]}`}
       style={{
         boxShadow: "6px 6px 0px #000000",
         transform: `rotate(${rotation})`,

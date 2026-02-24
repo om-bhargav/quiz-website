@@ -277,7 +277,7 @@ export default function Page() {
       {/* Join Button */}
       <div className="px-4 pb-6">
         <button
-          disabled={isDisabled}
+          disabled={isDisabled || loading}
           onClick={onClickHandler}
           className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] ${
             !isDisabled
@@ -285,12 +285,13 @@ export default function Page() {
               : "bg-gray-300 text-black/40 cursor-not-allowed"
           }`}
         >
-          {pending ? <Loader2 className="mx-auto animate-spin"/>:buttonLabel}
+          {(pending || loading) ? <Loader2 className="mx-auto animate-spin"/>:buttonLabel}
         </button>
         {
           tournamentStatus==="COMPLETED" &&
           <Link href={`/join-quiz/${id}/leaderboard`}> 
           <button
+          disabled={loading}
           className={`w-full mt-4 py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] bg-[#6366F1] text-white active:translate-y-[2px]`}
           >
           Go To LeaderBoard

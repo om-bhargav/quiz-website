@@ -38,14 +38,14 @@ export default function CategoryModal({
   isSubCategory = false,
 }: Props) {
   const [name, setName] = useState("");
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
-      setImage(initialData.image ?? "/no-image.png");
+      setImage(initialData.image);
     } else {
       setName("");
-      setImage("/no-image.png");
+      setImage(null);
     }
   }, [initialData, open]);
 
@@ -68,7 +68,7 @@ export default function CategoryModal({
       await onSubmit({
         id: initialData?.id,
         name,
-        image,
+        image: image!,
       });
     }
     // console.log(name, image);
@@ -87,32 +87,34 @@ export default function CategoryModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isSubCategory && (
             <>
-            <div className="relative w-full min-h-70 grid gap-2">
-              <Image
-                src={image}
-                alt={"Logo Image"}
-                className="object-fit"
-                fill
-              />
-            </div>
-            <div className="grid gap-2">
-              <label className="text-sm font-medium">
-                {initialData ? "Change" : "Upload"} Image
-              </label>
-              <Input
-                name="image"
-                placeholder="Select Image"
-                type="file"
-                onChange={async (e) => {
-                  const file = e.target?.files?.[0];
-                  if (file) {
-                    const base64Image = await ImageToBase64(file);
-                    setImage(base64Image);
-                  }
-                }}
-                disabled={pending}
-              />
-            </div>
+              {image && (
+                <div className="relative w-full min-h-70 grid gap-2">
+                  <Image
+                    src={image}
+                    alt={"Logo Image"}
+                    className="object-fit"
+                    fill
+                  />
+                </div>
+              )}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">
+                  {initialData ? "Change" : "Upload"} Image
+                </label>
+                <Input
+                  name="image"
+                  placeholder="Select Image"
+                  type="file"
+                  onChange={async (e) => {
+                    const file = e.target?.files?.[0];
+                    if (file) {
+                      const base64Image = await ImageToBase64(file);
+                      setImage(base64Image);
+                    }
+                  }}
+                  disabled={pending}
+                />
+              </div>
             </>
           )}
           <div className="grid gap-2">
@@ -131,7 +133,7 @@ export default function CategoryModal({
             <Button
               type="button"
               variant="outline"
-              onClick={()=>onClose()}
+              onClick={() => onClose()}
               disabled={pending}
             >
               Cancel

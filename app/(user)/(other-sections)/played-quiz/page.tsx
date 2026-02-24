@@ -117,9 +117,12 @@ export default function page() {
                       <Award className="w-3.5 h-3.5" /> {quiz.score ?? 0}/
                       {quiz.tournament.totalQuestions}
                     </span>
-                    <span className="inline-flex items-center gap-1 bg-[#A5F3FC] px-2 py-1 rounded-[6px] border-[2px] border-black text-[11px] font-[800]">
-                      Rank #{quiz.rank ?? 0}
+                    {
+                      quiz.rank &&
+                      <span className="inline-flex items-center gap-1 bg-[#A5F3FC] px-2 py-1 rounded-[6px] border-[2px] border-black text-[11px] font-[800]">
+                      Rank #{quiz.rank}
                     </span>
+                    }
                     {quiz.prize > 0 && (
                       <span className="inline-flex items-center gap-1 bg-[#FFDB58] px-2 py-1 rounded-[6px] border-[2px] border-black text-[11px] font-[800]">
                         Won ₹{quiz.prize}
