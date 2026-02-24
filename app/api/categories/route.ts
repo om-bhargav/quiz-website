@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
 
 const categorySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
+  image: z.string().min(2,"Image is Required!")
 });
 
 export async function POST(req: NextRequest) {
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name } = validation.data;
+    const { name,image } = validation.data;
 
     const existing = await prisma.category.findUnique({ where: { name } });
     if (existing) {
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const category = await prisma.category.create({ data: { name } });
+    const category = await prisma.category.create({ data: { name,image } });
 
     return NextResponse.json(
       { success: true, message: "Category Created", category },

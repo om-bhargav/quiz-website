@@ -7,8 +7,8 @@ export default function TopBar({setOpen}:{setOpen: any}) {
             <div className="flex items-center max-md:justify-between md:justify-end gap-4">
                 <Button className="md:hidden" size={"icon"} onClick={()=>setOpen((prev: boolean)=>!prev)}><Menu/></Button>
                 {/* Profile Section */}
-                <Button variant={"ghost"} size={"lg"}>
-                    <div className="flex items-center justify-center text-white text-sm font-bold w-9 h-9 rounded-full bg-gradient-to-tr from-primary/50 to-primary shadow-sm shadow-orange-200">
+                <Button variant={"ghost"}>
+                    <div className="flex items-center justify-center text-white text-sm font-bold w-9 h-9 rounded-full bg-gradient-to-tr from-primary/50 to-primary shadow-sm shadow-primary">
                         A
                     </div>
                     <div className="hidden sm:block text-left">

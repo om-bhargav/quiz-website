@@ -44,7 +44,7 @@ export default function Sidebar({open,setOpen}:any) {
   const SidebarContent = () => (
     <div className="flex h-full flex-col bg-background">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b">
+      <div className="flex items-center gap-3 px-6 py-[10px] border-b">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow">
           <Box className="h-6 w-6" />
         </div>
@@ -70,7 +70,7 @@ export default function Sidebar({open,setOpen}:any) {
                   className={cn(
                     "w-full justify-start gap-3 rounded-lg text-sm font-medium",
                     isActive &&
-                      "bg-primary text-primary-foreground hover:bg-primary"
+                      "bg-primary text-primary-foreground! hover:bg-primary"
                   )}
                 >
                   <item.icon

@@ -37,7 +37,7 @@ export default function CategorySection({ selected, setSelected }: Props) {
                 cat.name === "defaulttype" ? (
                   <CategoryCard
                     name="all"
-                    image={"/default.png"}
+                    image={cat?.image}
                     onClick={() => setSelected("all")}
                     id={"all"}
                     selected={selected === "all"}

@@ -29,7 +29,7 @@ export function AnalyticsSection() {
             />
           ))}
         </div>
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-5">
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}

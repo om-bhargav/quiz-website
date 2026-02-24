@@ -39,17 +39,10 @@ export default function CategoryCard({
     >
       {/* Rounded image – none for All Contest */}
         <Avatar className="flex w-[56px] h-[56px] my-3 mx-auto border-3 border-black items-center justify-center">
-          <AvatarImage>
-            <Image
-              fill
-              src={image}
-              alt={name}
-              className={`w-full h-full object-cover ${
+          <AvatarImage alt={name} src={image} className={`w-full h-full object-cover ${
                 selected ? "" : "grayscale"
-              }`}
-            />
-          </AvatarImage>
-          <AvatarFallback className="w-full uppercase h-full text-lg font-extrabold text-black">
+              }`}/>
+            <AvatarFallback className="w-full uppercase h-full text-lg font-extrabold text-black">
             {name[0]}
           </AvatarFallback>
         </Avatar>
