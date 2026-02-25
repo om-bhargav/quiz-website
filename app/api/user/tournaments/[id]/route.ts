@@ -8,6 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const defaultStatus = ["LIVE","PUBLISHED"];
     if (!id) {
       throw Error();
     }
@@ -33,7 +34,7 @@ export async function GET(
     if(!tournament){
       throw Error("Tournament Not Found!");
     }
-    const recommendedTournaments = await prisma.tournament.findMany({
+    const recommendedTournaments = (await prisma.tournament.findMany({
       where: { NOT: { id: id },categoryId: tournament.category.id, },
       select: {
         id: true,
@@ -51,6 +52,8 @@ export async function GET(
         difficulty: true,
         _count: { select: { registration: true } },
       },
+    }))?.filter((quiz)=>{
+      return defaultStatus.includes(getTournamentStatus(quiz));
     });
     const formatted = ({
       winningSeats,
@@ -66,7 +69,7 @@ export async function GET(
       status: getTournamentStatus({ ...rest }),
       seatsLeft: rest.totalSeats - winningSeats - _count.registration,
     });
-    const finalRecommendations = recommendedTournaments.map(
+    const finalRecommendations = recommendedTournaments?.map(
       ({ winningSeats, entryFee, prizePool, _count, ...rest }: any) => ({
         ...rest,
         winningSeats,
