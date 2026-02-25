@@ -29,16 +29,15 @@ export async function GET(req: NextRequest) {
           select: { tournaments: true, subCategories: true },
         },
         tournaments: true,
-        subCategories: true,
-_count: {
-          select: { tournaments: true, subCategories: true },
-        },
-       
+        subCategories: true
       },
     });
-    const finalCategories = categories?.map(({tournaments,...rest})=>{
-      const tournamentsSize = tournaments.filter((tournament)=>["PUBLISHED","LIVE"].includes(getTournamentStatus(tournament)))?.length ?? 0;
-      return {...rest,tournamentsSize}
+    const finalCategories = categories?.map(({ tournaments, ...rest }) => {
+      const tournamentsSize =
+        tournaments.filter((tournament) =>
+          ["PUBLISHED", "LIVE"].includes(getTournamentStatus(tournament))
+        )?.length ?? 0;
+      return { ...rest, tournamentsSize };
     });
     return NextResponse.json({ success: true, categories: finalCategories });
   } catch {
@@ -51,7 +50,7 @@ _count: {
 
 const categorySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  image: z.string().min(2,"Image is Required!")
+  image: z.string().min(2, "Image is Required!"),
 });
 
 export async function POST(req: NextRequest) {
@@ -74,7 +73,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name,image } = validation.data;
+    const { name, image } = validation.data;
 
     const existing = await prisma.category.findUnique({ where: { name } });
     if (existing) {
@@ -84,7 +83,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const category = await prisma.category.create({ data: { name,image } });
+    const category = await prisma.category.create({ data: { name, image } });
 
     return NextResponse.json(
       { success: true, message: "Category Created", category },
