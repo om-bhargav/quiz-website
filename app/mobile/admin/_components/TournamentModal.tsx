@@ -93,14 +93,12 @@ const inputFields = [
 ];
 const formatDateTimeLocal = (dateString?: string) => {
   if (!dateString) return "";
-
   const date = new Date(dateString);
 
-  const pad = (n: number) => String(n).padStart(2, "0");
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60000);
 
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate()
-  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return localDate.toISOString().slice(0, 16);
 };
 export default function TournamentModal({
   open,
@@ -116,13 +114,13 @@ export default function TournamentModal({
   const [category, setCategory] = useState<any>(null);
   useEffect(() => {
     if (initialData) {
-    setFormData({
-      ...defaultValues,
-      ...initialData,
-      startTime: formatDateTimeLocal(initialData.startTime),
-      windowOpenTime: formatDateTimeLocal(initialData.windowOpenTime),
-      endTime: formatDateTimeLocal(initialData.endTime),
-    });
+      setFormData({
+        ...defaultValues,
+        ...initialData,
+        startTime: formatDateTimeLocal(initialData.startTime),
+        windowOpenTime: formatDateTimeLocal(initialData.windowOpenTime),
+        endTime: formatDateTimeLocal(initialData.endTime),
+      });
       const selectedCategory = data?.categories?.find(
         (c: any) => c.id === initialData.categoryId
       );
@@ -202,7 +200,7 @@ export default function TournamentModal({
               <Select
                 name="categoryId"
                 value={formData.categoryId}
-                disabled={isLoading || data?.categories?.length===0}
+                disabled={isLoading || data?.categories?.length === 0}
                 onValueChange={(val) => {
                   handleChange("categoryId", val);
                   const selected = data?.categories?.find(
@@ -289,10 +287,13 @@ export default function TournamentModal({
             )} */}
             <DialogFooter className="col-span-2 mt-4">
               <Button disabled={pending} type="submit" className="w-full">
-                {
-                  pending ? <Loader2 className="animate-spin"/>
-                   : initialData ? "Update Tournament" : "Create Tournament"
-                }
+                {pending ? (
+                  <Loader2 className="animate-spin" />
+                ) : initialData ? (
+                  "Update Tournament"
+                ) : (
+                  "Create Tournament"
+                )}
               </Button>
             </DialogFooter>
           </form>
