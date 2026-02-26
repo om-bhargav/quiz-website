@@ -6,7 +6,7 @@ import Hero from "../_components/Hero";
 import HowToUse from "../_components/HowToUse";
 import Navbar from "../_components/Navbar";
 import Testimonials from "../_components/Testimonials";
-
+import "./styles/index.css";
 const Index = () => {
   return (
     <div className="min-h-screen grid bg-background">
