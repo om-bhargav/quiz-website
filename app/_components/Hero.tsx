@@ -7,7 +7,7 @@ const Hero = () => {
       <div className="absolute top-20 right-10 w-16 h-16 neo-border rotate-12 hidden md:block opacity-10 bg-muted" />
       <div className="absolute bottom-32 left-16 w-10 h-10 neo-border -rotate-6 hidden lg:block opacity-10 bg-muted" />
 
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           {/* Left content */}
           <div className="flex-1 text-center lg:text-left">

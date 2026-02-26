@@ -26,7 +26,7 @@ const steps = [
 
 const HowToUse = () => {
   return (
-    <section id="how-to-use" className="py-16 max-w-7xl mx-auto md:py-24 bg-neo-orange/40">
+    <section id="how-to-use" className="py-16 md:py-24 bg-neo-orange/40">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="inline-block bg-background neo-border neo-shadow px-6 py-2 mb-6">
