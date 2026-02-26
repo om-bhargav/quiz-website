@@ -75,9 +75,6 @@ export default function Page() {
   };
 
   const { data, isLoading, error,isValidating } = useSWR("/api/user/transactions", fetcher);
-  useEffect(() => {
-    console.log(data, isLoading);
-  }, [data, isLoading]);
   return (
     <Wrapper title="Transaction History">
       <div className="p-4">
