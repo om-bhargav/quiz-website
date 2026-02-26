@@ -11,13 +11,13 @@ export default function TabsComponent() {
     {
       icon: Home,
       title: "home",
-      link: "/",
+      link: "/mobile",
       color: "amber",
     },
     {
       icon: User,
       title: "profile",
-      link: "/profile",
+      link: "/mobile/profile",
       color: "sky-blue",
     },
   ];

@@ -36,7 +36,7 @@ export default function HomeQuizCard({
 
   return (
     <Link
-      href={`/contest/${id}`}
+      href={`/mobile/contest/${id}`}
       className="block live-card-fade-in focus:outline-none"
       style={{ animationDelay: `${index * 0.06}s` }}
     >
