@@ -1,5 +1,5 @@
 import { Trophy, Coins, Brain, Wallet } from "lucide-react";
-
+import { SITE_NAME } from "@/lib/constants";
 const features = [
   {
     icon: Coins,
@@ -33,14 +33,14 @@ const About = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="inline-block bg-neo-blue neo-border neo-shadow px-6 py-2 mb-6">
-            <span className="font-bold uppercase tracking-widest text-foreground">About QuizWin</span>
+            <span className="font-bold uppercase tracking-widest text-foreground">About {SITE_NAME}</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
             Your Brain is Your{" "}
             <span className="bg-neo-yellow neo-border px-2">Superpower 🧠</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            QuizWin is the ultimate quiz platform where knowledge pays off. Use your free tokens, play on categories you're passionate about, and earn real money!
+            {SITE_NAME} is the ultimate quiz platform where knowledge pays off. Use your free tokens, play on categories you're passionate about, and earn real money!
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 import { Smartphone, Star, Zap } from "lucide-react";
-
+import { SITE_NAME } from "@/lib/constants";
 const Hero = () => {
   return (
     <section className="relative overflow-hidden bg-background py-16 md:py-24">
@@ -67,12 +67,12 @@ const Hero = () => {
                   {/* Phone inner bezel */}
                   <div className="bg-foreground rounded-[36px] p-[2px] relative">
                     {/* Notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-foreground rounded-b-2xl z-10" />
+                    <div className="absolute top-0 left-50 -translate-x-1/2 w-24 h-6 bg-foreground rounded-b-2xl z-10" />
                     {/* Screen */}
                     <div className="rounded-[34px] overflow-hidden bg-background">
                       <img
                         src={"/hero-phone.png"}
-                        alt="QuizWin App Screenshot"
+                        alt={`${SITE_NAME} App Screenshot`}
                         className="w-full h-auto block"
                       />
                     </div>

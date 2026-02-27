@@ -1,10 +1,12 @@
+import { SITE_NAME } from "@/lib/constants";
 const Footer = () => {
+  const breakPoint = 3;
   return (
     <footer className="bg-foreground py-8">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-background font-bold text-lg">
-            Quiz<span className="bg-neo-pink neo-border px-1 text-primary-foreground">Win</span>
+            {SITE_NAME.slice(0,breakPoint)}<span className="bg-neo-pink neo-border px-1 text-primary-foreground">{SITE_NAME.slice(breakPoint)}</span>
           </p>
           <p className="text-background/70 font-medium text-sm">
             © 2026 QuizWin. All rights reserved. Play responsibly.

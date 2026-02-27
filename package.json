@@ -63,6 +63,7 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "hono": "^4.12.3"
   }
 }

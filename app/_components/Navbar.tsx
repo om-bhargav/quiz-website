@@ -1,11 +1,12 @@
 import { Smartphone } from "lucide-react";
-
+import { SITE_NAME } from "@/lib/constants";
 const Navbar = () => {
+  const breakPoint = 3;
   return (
     <nav className="bg-background neo-border border-t-0 border-x-0 sticky top-0 z-50">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         <a href="#" className="text-2xl font-bold text-foreground tracking-tight">
-          Quiz<span className="bg-neo-pink neo-border px-1 text-primary-foreground">Win</span>
+          {SITE_NAME.slice(0,breakPoint)}<span className="bg-neo-pink neo-border px-1 text-primary-foreground">{SITE_NAME.slice(breakPoint)}</span>
         </a>
 
         <div className="hidden md:flex items-center gap-6">

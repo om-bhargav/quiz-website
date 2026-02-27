@@ -7,7 +7,7 @@ export const colorMap: any = {
   "sky-blue": "bg-blue-200",
   purple: "bg-[#A78BFA]"
 };
-export const SITE_NAME = "Quiz Management";
+export const SITE_NAME = "Olobix";
 
 export const difficultyColors: any = {
   EASY: "bg-green-600",

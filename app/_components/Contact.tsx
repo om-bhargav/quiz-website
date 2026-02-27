@@ -1,7 +1,7 @@
 import { MessageCircle, Mail, MapPin } from "lucide-react";
-
+import { SITE_NAME } from "@/lib/constants";
 const Contact = () => {
-  const whatsappLink = "https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20know%20more%20about%20QuizWin!";
+  const whatsappLink = `https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20know%20more%20about%20${SITE_NAME}!`;
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-neo-purple/30">
@@ -80,7 +80,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="font-bold text-foreground">Email Us</p>
-                  <p className="text-foreground/70 font-medium">support@quizwin.app</p>
+                  <p className="text-foreground/70 font-medium">support@{SITE_NAME}.app</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
