@@ -9,7 +9,7 @@ const Footer = () => {
             {SITE_NAME.slice(0,breakPoint)}<span className="bg-neo-pink neo-border px-1 text-primary-foreground">{SITE_NAME.slice(breakPoint)}</span>
           </p>
           <p className="text-background/70 font-medium text-sm">
-            © 2026 QuizWin. All rights reserved. Play responsibly.
+            © 2026 {SITE_NAME}. All rights reserved. Play responsibly.
           </p>
           <div className="flex gap-4">
             <a href="#" className="text-background/70 hover:text-background font-bold text-sm uppercase">Privacy</a>
