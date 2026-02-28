@@ -16,6 +16,7 @@ import {
 import { InputField, NextButton } from "@/components/FormComponents";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { EMAIL_PATTERN } from "@/lib/constants";
 const initialData = {
   name: "",
   email: "",
@@ -49,6 +50,9 @@ export default function Signup() {
         if (!data[field]) {
           throw Error("Please Fill All the required Fields");
         }
+      }
+      if(!EMAIL_PATTERN.test(data.email)){
+        throw Error("Email Doesn't Match the provided pattern!");
       }
       if (data.phone.length !== 10) {
         throw Error("Phone number must be 10 digits!");
@@ -103,8 +107,6 @@ export default function Signup() {
       if (result?.error) {
         throw Error(result.error);
       }
-
-      toast.success("Welcome back!");
       router.push("/mobile");
     }catch(error: any){
       setError(error.message);
@@ -151,7 +153,7 @@ export default function Signup() {
       )}
 
       {/* Form */}
-      <div className="flex-1 px-4 pb-6">
+      <div className="mt-5 flex-1 px-4 pb-6">
         <div
           className="bg-white rounded-[16px] p-6 border-[4px] border-black"
           style={{ boxShadow: "6px 6px 0px #000000" }}

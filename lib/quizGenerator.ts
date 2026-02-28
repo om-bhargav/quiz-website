@@ -7,10 +7,11 @@ interface QuizParams {
   category: string;
   difficulty: string;
   count: number;
+  language: string;
 }
 
 export async function generateExactQuestions(params: QuizParams) {
-  const { title, description, category, difficulty, count } = params;
+  const { title, description, category, difficulty, count ,language} = params;
   
   let allQuestions: any[] = [];
   let retryCount = 0;
@@ -27,7 +28,8 @@ export async function generateExactQuestions(params: QuizParams) {
         description, 
         category, 
         requestCount, 
-        difficulty
+        difficulty,
+        language
       );
       const responseText = await callGeminiWithRotation(prompt);
       

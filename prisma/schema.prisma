@@ -172,6 +172,7 @@ model Tournament {
   winningSeats Int
   entryFee Float
   prizePool Float
+  language String @default("ENGLISH")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   subCategoryId String

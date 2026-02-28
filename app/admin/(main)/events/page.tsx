@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TournamentCard from "../_components/TournamentCard";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import ErrorLoading from "@/components/ErrorLoading";
 import { Button } from "@/components/ui/button";
 import TournamentModal from "../_components/TournamentModal";
+import { Input } from "@/components/ui/input";
 export default function page() {
   const {
     data,
@@ -19,6 +20,11 @@ export default function page() {
   const [initialData, setInitialData] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [pending, setPending] = useState(false);
+  const events = data?.tournaments;
+  const [searchedEvents, setSearchedEvents] = useState([]);
+  useEffect(() => {
+      setSearchedEvents(events);
+  }, [events]);
   const handleCreate = async (data: any) => {
     try {
       setPending(true);
@@ -62,42 +68,64 @@ export default function page() {
       setPending(false);
     }
   };
-    const handleDelete = async (tournamentId: string) => {
-    try{
-      const request = await fetch(`/api/admin/tournaments/${tournamentId}`,{method: "DELETE"});
+  const handleDelete = async (tournamentId: string) => {
+    try {
+      const request = await fetch(`/api/admin/tournaments/${tournamentId}`, {
+        method: "DELETE",
+      });
       const response = await request.json();
-      if(!response.success){
-          throw Error(response.message);
+      if (!response.success) {
+        throw Error(response.message);
       }
       toast.success(response.message);
       await mutate();
-    }catch(error: any){
+    } catch (error: any) {
       toast.error(error.message);
+    }
+  };
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as any);
+    const { searchValue } = Object.fromEntries(formData);
+    if (!searchValue) {
+      setSearchedEvents(events);
+    } else {
+      const targetName = (searchValue as string).toLocaleLowerCase();
+      setSearchedEvents(events?.filter((event: any)=>{
+        const currentName = (event.title as string).toLocaleLowerCase();
+        return currentName.includes(targetName);
+      }));
     }
   };
   return (
     <div className="min-w-full space-y-5">
-      <h1 className="text-xl md:text-3xl font-bold flex items-center justify-between">
+      <h1 className="text-xl md:text-3xl font-bold flex max-md:flex-col gap-4 md:items-center justify-between">
         <div>Events Management</div>
+        <div className="flex flex-col md:flex-row gap-4">
+        <form onSubmit={handleSearch} className="flex items-center gap-3">
+          <Input name="searchValue" placeholder="Search" />
+          <Button type="submit">Search</Button>
+        </form>
         <Button size={"lg"} onClick={() => setOpen(true)}>
           Add Event +
         </Button>
+        </div>
       </h1>
       <ErrorLoading
         loading={loading || isValidating}
         error={error}
-        dataLength={data?.tournaments.length}
+        dataLength={searchedEvents?.length}
         emptyMessage="No Tournaments Exist!"
       >
         <div className="grid xl:grid-cols-3 gap-5">
-          {data?.tournaments?.map((tournament: any) => {
+          {searchedEvents?.map((tournament: any) => {
             return (
               <TournamentCard
                 loading={pending}
                 setEditOpen={setEditOpen}
                 setInitialData={setInitialData}
                 tournament={tournament}
-                handleDelete={()=>handleDelete(tournament.id)}
+                handleDelete={() => handleDelete(tournament.id)}
                 key={tournament.id}
               />
             );

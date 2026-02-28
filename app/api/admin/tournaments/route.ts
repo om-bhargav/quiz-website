@@ -69,6 +69,7 @@ const tournamentSchema = z.object({
   difficulty: z.enum(["EASY", "MEDIUM", "HARD","EXPERT"]),
   entryFee: z.number().min(0),
   prizePool: z.number().min(0),
+  language: z.string().min(1,"Language Is Required!"),
   totalSeats: z.number().min(2, "Must have at least 2 seats"),
   winningSeats: z.number().min(0, "Cannot be negative"),
 });
@@ -117,7 +118,8 @@ export async function POST(req: NextRequest) {
         description: data.description || "",
         category: category.name,
         difficulty: data.difficulty,
-        count: data.totalQuestions
+        count: data.totalQuestions,
+        language: data.language
       });
     } catch (error: any) {
       return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -131,6 +133,7 @@ export async function POST(req: NextRequest) {
         startTime: data.startTime,
         subCategoryId: data.subCategoryId,
         endTime: data.endTime,
+        language: data.language,
         windowOpenTime: data.windowOpenTime,
         durationPerQ: data.durationPerQ,
         totalQuestions: data.totalQuestions,

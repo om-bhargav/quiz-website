@@ -3,7 +3,8 @@ export const GenerateQuizPrompt = (
   description: string,
   topic: string,
   count: number,
-  difficulty: string
+  difficulty: string,
+  language: string
 ) => {
   return `
     You are an expert Quiz Master for a high-stakes tournament.
@@ -13,7 +14,7 @@ export const GenerateQuizPrompt = (
     - **Title:** "${title}"
     - **Description:** "${description || "General knowledge tournament"}"
     - **Core Topic:** "${topic}"
-    
+    - **Language:** "${language}"
     ### Content Guidelines:
     1. **Relevance:** Questions must align with the Title and Description context.
     2. **Difficulty:** - If EASY: Common knowledge, straightforward facts.
@@ -21,7 +22,7 @@ export const GenerateQuizPrompt = (
        - If HARD: Deep cuts, specific dates, complex trivia, or multi-step reasoning.
     3. **Uniqueness:** No duplicate questions. Ensure variety in sub-topics.
     4. **Accuracy:** One option MUST be factually correct. The other three must be plausible but clearly incorrect distractors.
-
+    5. **Language:** Only generate all the questions in the specified language and don't make any spell mistakes in them
     ### Technical Constraints (CRITICAL):
     - **Format:** Return ONLY a raw JSON array. 
     - **Forbidden:** Do NOT wrap the output in markdown (e.g., no \`\`\`json tags).

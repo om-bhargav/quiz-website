@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/checkAuth";
+import { EMAIL_PATTERN } from "@/lib/constants";
 
 export async function GET(
   req: NextRequest,
@@ -51,7 +52,7 @@ export async function GET(
     );
   }
 }
-
+const ROLES = ["USER", "ADMIN"];
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -67,7 +68,7 @@ export async function PUT(
 
     const { id: userId } = await params;
     const body = await req.json();
-    const { status, balance } = body;
+    const { status, balance, role, email } = body;
 
     if (status && !["ACTIVE", "SUSPENDED"].includes(status)) {
       return NextResponse.json(
@@ -83,12 +84,41 @@ export async function PUT(
       );
     }
 
+    if (!ROLES.includes(role)) {
+      return NextResponse.json(
+        { success: false, message: "Role is not valid!" },
+        { status: 400 }
+      );
+    }
+
+    if (!EMAIL_PATTERN.test(email)) {
+      return NextResponse.json(
+        { success: false, message: "Email is not valid!" },
+        { status: 400 }
+      );
+    }
+    const exist = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (exist) {
+      return NextResponse.json(
+        { success: false, message: "Email Already Exist!" },
+        { status: 400 }
+      );
+    }
     const updateData: any = {};
 
     if (status) {
       updateData.status = status;
     }
-
+    if (email) {
+      updateData.email = email;
+    }
+    if (role) {
+      updateData.role = role;
+    }
     if (balance !== undefined) {
       updateData.wallet = {
         update: {
@@ -139,7 +169,7 @@ export async function DELETE(
     await prisma.user.delete({
       where: {
         id: userId,
-      }
+      },
     });
 
     return NextResponse.json(

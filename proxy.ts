@@ -20,7 +20,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   };
 
-  const publicMobileRoutes = ["/mobile/login", "/mobile/signup"];
+  const publicMobileRoutes = ["/mobile/login", "/mobile/signup","/mobile/forgot-password"];
   const publicDesktopRoutes = ["/admin/login", "/"];
 
   const isMobileRoute = pathname.startsWith("/mobile");

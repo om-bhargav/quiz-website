@@ -55,11 +55,13 @@ export function NextButton({
   variant = "default",
   onClick,
   disabled=false,
+  type="submit",
   bgClass
 }: {
   text?: string;
   variant?: string;
   bgClass?: string;
+  type?: any;
   onClick?: (...props: any) => any;
   disabled?: boolean
 }) {
@@ -68,7 +70,7 @@ export function NextButton({
       variant={variant as any}
       className={`border-4 border-black uppercase w-full! rounded-lg py-6! text-md hover:translate-y-[2px] ${bgClass} hover:${bgClass} font-bold text-md text-black`}
       onClick={onClick}
-      type={"submit"}
+      type={type}
       disabled={disabled}
     >
       {disabled ? <Loader2 size={20} className="animate-spin"/>:text}

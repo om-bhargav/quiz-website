@@ -15,3 +15,5 @@ export const difficultyColors: any = {
   HARD: "bg-red-500",
   EXPERT: "bg-red-900",
 };
+
+export const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|icloud\.com)$/;

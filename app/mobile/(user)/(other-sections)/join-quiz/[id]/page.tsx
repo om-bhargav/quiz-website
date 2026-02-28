@@ -39,7 +39,7 @@ export default function Page() {
 
   const handleSlideConfirm = () => {
     setShowSlideModal(false);
-    router.push(`/join-quiz/${id}/play`);
+    router.push(`/mobile/join-quiz/${id}/play`);
   };
 
   const { data, isLoading, isValidating } = useSWR(

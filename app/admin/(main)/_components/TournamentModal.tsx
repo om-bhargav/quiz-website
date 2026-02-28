@@ -21,7 +21,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { useFormStatus } from "react-dom";
 import { Loader2, Loader2Icon } from "lucide-react";
 type TournamentFormValues = {
   title: string;
@@ -35,6 +34,7 @@ type TournamentFormValues = {
   totalQuestions: number;
   difficulty: string;
   totalSeats: number;
+  language: string;
   winningSeats: number;
   entryFee: number;
   prizePool: number;
@@ -59,6 +59,7 @@ const defaultValues: TournamentFormValues = {
   durationPerQ: 0,
   totalQuestions: 0,
   difficulty: "EASY",
+  language: "",
   totalSeats: 0,
   winningSeats: 0,
   entryFee: 0,
@@ -91,6 +92,7 @@ const inputFields = [
   { label: "Entry Fee", name: "entryFee", type: "number" },
   { label: "Prize Pool", name: "prizePool", type: "number" },
 ];
+const LANGUAGES = ["ENGLISH", "HINDI", "HINGLISH"];
 const formatDateTimeLocal = (dateString?: string) => {
   if (!dateString) return "";
   const date = new Date(dateString);
@@ -263,28 +265,25 @@ export default function TournamentModal({
                 />
               </div>
             ))}
-
-            {/* Status */}
-            {/* {initialData && (
-              <div className="space-y-2 col-span-2">
-                <label className="text-sm font-medium">Status</label>
-                <Select
-                  name="status"
-                  value={formData.status}
-                  onValueChange={(val) => handleChange("status", val)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="DRAFT">DRAFT</SelectItem>
-                    <SelectItem value="PUBLISHED">PUBLISHED</SelectItem>
-                    <SelectItem value="LIVE">LIVE</SelectItem>
-                    <SelectItem value="COMPLETED">COMPLETED</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )} */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Language</label>
+              <Select
+                name="difficulty"
+                value={formData.language}
+                onValueChange={(val) => handleChange("language", val)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Language" />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((language) => (
+                    <SelectItem key={language} value={language}>
+                      {language}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <DialogFooter className="col-span-2 mt-4">
               <Button disabled={pending} type="submit" className="w-full">
                 {pending ? (

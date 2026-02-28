@@ -45,6 +45,7 @@ const updateTournamentSchema = z.object({
   totalQuestions: z.number().min(1).optional(),
   totalSeats: z.number().min(2).optional(),
   winningSeats: z.number().min(0).optional(),
+  language: z.string().min(1,"Language Is Required!")
 });
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -107,7 +108,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             description: data.description || currentTournament.description || "",
             category: currentTournament.category.name,
             difficulty: data.difficulty || currentTournament.difficulty,
-            count: difference 
+            count: difference,
+            language: data.language
           });
 
           for (const q of newQuestions) {

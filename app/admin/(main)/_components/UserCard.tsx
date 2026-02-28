@@ -1,25 +1,25 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { WarningModal } from "@/components/WarningModal";
-import { EditBalanceModal } from "./EditBalance";
+import { Trash2 } from "lucide-react";
+import { EditUserModal } from "./EditUser";
 
 export default function UserOverviewCard({
   loading,
   user,
   handleDelete,
-  handleBalanceUpdate,
+  handleUpdate,
   handleStatusUpdate,
 }: {
   loading: boolean;
   user: any;
   handleDelete: any;
   handleStatusUpdate: any;
-  handleBalanceUpdate: any;
+  handleUpdate: any;
 }) {
   return (
     <Card className="w-full! rounded-xl relative shadow-sm">
@@ -69,15 +69,15 @@ export default function UserOverviewCard({
         </WarningModal>
         {/* Actions */}
         <div className="flex gap-3">
-          <EditBalanceModal
+          <EditUserModal
             disabled={loading}
             user={user}
-            handleUpdate={handleBalanceUpdate}
+            handleUpdate={handleUpdate}
           >
             <Button variant="outline" className="flex-1">
               Edit
             </Button>
-          </EditBalanceModal>
+          </EditUserModal>
           <WarningModal
           disabled={loading}
             onConfirm={async () =>

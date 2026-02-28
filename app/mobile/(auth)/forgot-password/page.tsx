@@ -2,16 +2,14 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/FormComponents";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useGoBack } from "@/components/useGoBack";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import SuccessModal from "@/components/SuccessModal";
 import PasswordConfirmationModal from "@/components/PasswordConfirmationModal";
 import { NextButton } from "@/components/FormComponents";
+import toast from "react-hot-toast";
 const phaseVariants = {
   phase2: {
     initial: { opacity: 0, scale: 0.9 },
@@ -24,22 +22,68 @@ const phaseVariants = {
     exit: { opacity: 0, y: -40 },
   },
 };
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [data, setData] = useState({ email: "",npass:"",cpass:"" });
+  const [data, setData] = useState({
+    email: "",
+    npass: "",
+    cpass: "",
+    phase: "",
+    otp: "",
+    password: ""
+  });
   const [loading, setLoading] = useState(false);
   const [OTPSent, setOTPSent] = useState(false);
   const [OTPVerified, setOTPVerified] = useState(false);
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const goBack = useGoBack();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((resolve, reject) => {
-      setTimeout(resolve, 5000);
-    });
-    setLoading(false);
-    setOpen(true);
+    try {
+      let headers = { "Content-Type": "application/json" };
+      let body = { ...data };
+      if (!OTPSent && !OTPVerified) {
+        body.phase = "request";
+      } else if (OTPSent && !OTPVerified) {
+        body.phase = "verify";
+      } else {
+        if(data.cpass!==data.npass){
+          toast.error("Passwords doesn't match!");
+          return;
+        }
+        body.phase = "reset";
+        body.password = data.cpass;
+      }
+      const request = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+      const response = await request.json();
+      if (!response.success) {
+        throw Error(response.message);
+      }
+      if (!OTPSent && !OTPVerified) {
+        setOTPSent(true);
+      } else if (OTPSent && !OTPVerified) {
+        setOTPVerified(true);
+      } else {
+        setOpen(true);
+        toast.success(response.message);
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            setOpen(false);
+            router.push("/mobile");
+            resolve(3);
+          }, 3000);
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,8 +97,11 @@ export default function LoginPage() {
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="flex-1 flex h-full flex-col rounded-lg justify-between"
       >
-        <PasswordConfirmationModal open={open} onOpenChange={setOpen}/>
-        <form className="flex h-full flex-1 justify-between flex-col">
+        <PasswordConfirmationModal open={open} onOpenChange={setOpen} />
+        <form
+          onSubmit={handleSubmit}
+          className="flex h-full flex-1 justify-between flex-col"
+        >
           <div className="px-6 pt-8 pb-4 space-y-8">
             <div className="flex items-center gap-4">
               <ArrowLeft className="w-6 h-6 cursor-pointer" onClick={goBack} />
@@ -106,14 +153,15 @@ export default function LoginPage() {
                 </div>
 
                 <div className="space-y-8 pt-4">
-                  <OtpInput />
-                </div>
-                <div className="space-y-5 mt-5 text-center">
-                  <div>Didn't receive email?</div>
-                  <div>
-                    You can resend code in{" "}
-                    <span className="text-primary">55</span> s
-                  </div>
+                  <input
+                    type="text"
+                    value={data.otp}
+                    onChange={(e) =>
+                      setData({...data,otp:e.target.value.replace(/\D/g, "").slice(0, 6)})
+                    }
+                    className="w-full py-4 text-2xl text-center border-2 border-black rounded-lg tracking-widest"
+                    maxLength={6}
+                  />
                 </div>
               </motion.div>
             ) : (
@@ -127,9 +175,12 @@ export default function LoginPage() {
                 className="flex-1 h-full flex flex-col"
               >
                 <div className="space-y-5 my-3">
-                  <h1 className="text-2xl font-semibold">Create New Password 🔒</h1>
+                  <h1 className="text-2xl font-semibold">
+                    Create New Password 🔒
+                  </h1>
                   <p className="text-gray-500">
-                    Save the new password in a safe place, if you forget it then you have to do a forgot password again.
+                    Save the new password in a safe place, if you forget it then
+                    you have to do a forgot password again.
                   </p>
                 </div>
 
@@ -151,7 +202,7 @@ export default function LoginPage() {
                     placeholder="Confirm Password"
                   />
                   <div className="flex gap-2 items-center">
-                  <Checkbox/> Remember Me
+                    <Checkbox /> Remember Me
                   </div>
                 </div>
               </motion.div>
@@ -161,68 +212,11 @@ export default function LoginPage() {
             <NextButton
               text={OTPSent && !OTPVerified ? "Confirm" : "Continue"}
               disabled={loading}
-              onClick={
-                OTPSent && OTPVerified
-                  ? handleSubmit
-                  : OTPSent
-                  ? () => {
-                      setOTPVerified(true);
-                    }
-                  : () => {
-                      setOTPSent(true);
-                    }
-              }
+              type={"submit"}
             />
           </div>
         </form>
       </motion.div>
-    </div>
-  );
-}
-
-function OtpInput() {
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const inputsRef = useRef<any>([]);
-
-  const handleChange = (value: string, index: number) => {
-    if (!/^\d?$/.test(value)) return; // allow only single digit
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // move to next input
-    if (value && index < 3) {
-      inputsRef.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
-
-  return (
-    <div className="flex justify-center gap-4">
-      {otp.map((digit, index) => (
-        <Input
-          key={index}
-          type="text"
-          inputMode="numeric"
-          maxLength={1}
-          value={digit}
-          ref={(el: any) => (inputsRef.current[index] = el)}
-          onChange={(e) => handleChange(e.target.value, index)}
-          onKeyDown={(e) => handleKeyDown(e, index)}
-          className="h-14 text-center text-xl font-semibold 
-                     bg-primary/10 border-primary 
-                     focus-visible:ring-primary"
-        />
-      ))}
     </div>
   );
 }

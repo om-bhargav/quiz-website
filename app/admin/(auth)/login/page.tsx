@@ -33,7 +33,6 @@ export default function AdminLoginPage() {
         throw Error(result.error);
       }
       
-      toast.success("Welcome back!");
       router.push("/admin");
     } catch (err: any) {
       setError(err.message || "Something went wrong");

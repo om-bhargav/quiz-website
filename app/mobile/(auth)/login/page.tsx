@@ -7,6 +7,7 @@ import { Mail } from "lucide-react";
 import { InputField, NextButton } from "@/components/FormComponents";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import { EMAIL_PATTERN } from "@/lib/constants";
 const initialData = {
   email: "",
   password: "",
@@ -18,7 +19,10 @@ export default function Login() {
   const [loading,setLoading] = useState(false);
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-        setLoading(true);
+    if(!EMAIL_PATTERN.test(data.email)){
+      throw Error("Email Doesn't Match the provided pattern!");
+    }
+    setLoading(true);
     try {
       const result = await signIn("credentials", {
         redirect: false,
@@ -29,7 +33,6 @@ export default function Login() {
       if (result?.error) {
         throw Error(result.error);
       }
-      toast.success("Welcome back!");
       router.push("/mobile");
     } catch (error: any) {
       setError(error.message);
@@ -129,6 +132,17 @@ export default function Login() {
                 className="text-black font-[900] uppercase underline"
               >
                 Sign Up
+              </Link>
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-[13px] font-[700] text-black/70">
+              Forgot Password?{" "}
+              <Link
+                href="/mobile/forgot-password"
+                className="text-black font-[900] uppercase underline"
+              >
+                Forgot Password
               </Link>
             </p>
           </div>
