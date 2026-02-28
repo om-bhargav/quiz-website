@@ -3,7 +3,7 @@ import ErrorLoading from "@/components/ErrorLoading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fetcher } from "@/lib/fetcher";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import UserManagementCard from "../_components/UserCard";
@@ -19,10 +19,15 @@ export default function page() {
   } = useSWR("/api/admin/users", fetcher);
   const [sending, setSending] = useState(false);
   const users = data?.users;
-  const [searchedUsers, setSearchedUsers] = useState(users);
-  useEffect(() => {
-    setSearchedUsers(users);
-  }, [users]);
+  const [search, setSearch] = useState("");
+
+  const searchedUsers = useMemo(() => {
+    if (!search) return users;
+    
+    return users.filter((user: any) =>
+      user.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [users, search]);
   const handleStatusUpdate = async (userId: string, status: string) => {
     try {
       setSending(true);
@@ -66,7 +71,7 @@ export default function page() {
     role: string,
     updatedBalance: number
   ) => {
-    if(!EMAIL_PATTERN.test(email)){
+    if (!EMAIL_PATTERN.test(email)) {
       toast.error("Email Doesn't Match the expected Pattern!");
       return;
     }
@@ -74,7 +79,11 @@ export default function page() {
       setSending(true);
       const request = await fetch(`/api/admin/users/${userId}`, {
         method: "PUT",
-        body: JSON.stringify({ role: role,email: email,balance: updatedBalance }),
+        body: JSON.stringify({
+          role: role,
+          email: email,
+          balance: updatedBalance,
+        }),
       });
       const response = await request.json();
       if (!response.success) {
@@ -87,29 +96,15 @@ export default function page() {
       setSending(false);
     }
   };
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget as any);
-    const {searchValue} = Object.fromEntries(formData);
-    if(!searchValue){
-      setSearchedUsers(users);
-      
-    }else{
-      const targetName = (searchValue as string).toLocaleLowerCase();
-      setSearchedUsers(users?.filter((user: any)=>{
-        const currentName = (user.name as string).toLocaleLowerCase();
-        return currentName.includes(targetName);
-      }));
-    }
-  };
+
   return (
     <div className="min-w-full space-y-5">
       <div className="flex flex-col md:flex-row w-full gap-5 justify-between md:items-center">
         <h1 className="text-3xl font-bold">Users Management</h1>
-        <form onSubmit={handleSearch} className="flex items-center gap-3">
-          <Input name="searchValue" placeholder="Search"/>
-          <Button type="submit">Search</Button>
-        </form>
+        <div className="flex items-center gap-3">
+          <Input value={search} onChange={(e)=>setSearch(e.target.value)} name="searchValue" placeholder="Search" />
+          <Button type="button">Search</Button>
+        </div>
       </div>
       <ErrorLoading
         error={error}

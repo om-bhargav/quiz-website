@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TournamentCard from "../_components/TournamentCard";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
@@ -21,10 +21,16 @@ export default function page() {
   const [editOpen, setEditOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const events = data?.tournaments;
-  const [searchedEvents, setSearchedEvents] = useState([]);
-  useEffect(() => {
-      setSearchedEvents(events);
-  }, [events]);
+  const [search, setSearch] = useState("");
+
+  const searchedEvents = useMemo(() => {
+    if (!search) return events;
+
+    return events.filter((event: any) =>
+      event?.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [events, search]);
+
   const handleCreate = async (data: any) => {
     try {
       setPending(true);
@@ -83,29 +89,15 @@ export default function page() {
       toast.error(error.message);
     }
   };
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget as any);
-    const { searchValue } = Object.fromEntries(formData);
-    if (!searchValue) {
-      setSearchedEvents(events);
-    } else {
-      const targetName = (searchValue as string).toLocaleLowerCase();
-      setSearchedEvents(events?.filter((event: any)=>{
-        const currentName = (event.title as string).toLocaleLowerCase();
-        return currentName.includes(targetName);
-      }));
-    }
-  };
   return (
     <div className="min-w-full space-y-5">
       <h1 className="text-xl md:text-3xl font-bold flex max-md:flex-col gap-4 md:items-center justify-between">
         <div>Events Management</div>
         <div className="flex flex-col md:flex-row gap-4">
-        <form onSubmit={handleSearch} className="flex items-center gap-3">
-          <Input name="searchValue" placeholder="Search" />
+        <div className="flex items-center gap-3">
+          <Input value={search} onChange={(e)=>setSearch(e.target.value)} name="searchValue" placeholder="Search" />
           <Button type="submit">Search</Button>
-        </form>
+        </div>
         <Button size={"lg"} onClick={() => setOpen(true)}>
           Add Event +
         </Button>

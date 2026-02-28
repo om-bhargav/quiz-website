@@ -60,7 +60,7 @@ export function EditUserModal({
           </div>
           <div className="space-y-2">
             <Label>Role</Label>
-            <Select value={role} onValueChange={setRole}>
+            <Select disabled={disabled} value={role} onValueChange={setRole}>
               <SelectTrigger name={"role"} className="w-full">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
