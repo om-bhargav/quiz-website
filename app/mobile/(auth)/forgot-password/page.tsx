@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import PasswordConfirmationModal from "@/components/PasswordConfirmationModal";
 import { NextButton } from "@/components/FormComponents";
 import toast from "react-hot-toast";
+import { EMAIL_PATTERN } from "@/lib/constants";
 const phaseVariants = {
   phase2: {
     initial: { opacity: 0, scale: 0.9 },
@@ -38,6 +39,10 @@ export default function ForgotPasswordPage() {
   const [open, setOpen] = useState(false);
   const goBack = useGoBack();
   const handleSubmit = async (e: React.FormEvent) => {
+    if(!EMAIL_PATTERN.test(data.email)){
+      toast.error("Email Pattern is invalid!");
+      return;
+    }
     e.preventDefault();
     setLoading(true);
     try {
