@@ -97,17 +97,18 @@ export async function PUT(
         { status: 400 }
       );
     }
-    const exist = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    if (exist) {
-      return NextResponse.json(
-        { success: false, message: "Email Already Exist!" },
-        { status: 400 }
-      );
-    }
+
+    // const exist = await prisma.user.findUnique({
+    //   where: {
+    //     email,
+    //   },
+    // });
+    // if (exist && exist.email!==email) {
+    //   return NextResponse.json(
+    //     { success: false, message: "Email Already Exist!" },
+    //     { status: 400 }
+    //   );
+    // }
     const updateData: any = {};
 
     if (status) {
