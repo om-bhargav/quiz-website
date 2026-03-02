@@ -19,11 +19,11 @@ export default function Login() {
   const [loading,setLoading] = useState(false);
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!EMAIL_PATTERN.test(data.email)){
-      throw Error("Email Doesn't Match the provided pattern!");
-    }
     setLoading(true);
     try {
+      if(!EMAIL_PATTERN.test(data.email)){
+        throw Error("Email Doesn't Match the provided pattern!");
+      }
       const result = await signIn("credentials", {
         redirect: false,
         email: data.email,
@@ -35,6 +35,7 @@ export default function Login() {
       }
       router.push("/mobile");
     } catch (error: any) {
+      console.log(error.message);
       setError(error.message);
     } finally {
       setLoading(false);
