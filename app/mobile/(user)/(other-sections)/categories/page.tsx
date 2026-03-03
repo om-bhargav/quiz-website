@@ -25,6 +25,7 @@ export default function page() {
       <ErrorLoading
         loadingCard={CategoryCardSkeleton}
         loadingCount={6}
+        loaderClassName="p-5"
         loadingCols={3}
         loadingRows={2}
         loading={loading}

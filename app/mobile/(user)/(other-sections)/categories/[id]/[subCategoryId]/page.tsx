@@ -28,6 +28,7 @@ export default function page() {
       <ErrorLoading
         loading={isLoading}
         dataLength={tournaments.length}
+        loaderClassName="p-5"
         loadingCard={HomeQuizCardSkeleton}
         loadingCount={5}
         loadingCols={1}

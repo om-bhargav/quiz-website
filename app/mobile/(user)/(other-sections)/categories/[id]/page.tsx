@@ -26,6 +26,7 @@ export default function page() {
     <Wrapper title={`Sub categories Of ${categoryName ? categoryName:"..."}`}>
       <ErrorLoading
         loading={isLoading}
+        loaderClassName="p-5"
         loadingCard={CategoryCardSkeleton}
         loadingCount={6}
         loadingCols={3}
