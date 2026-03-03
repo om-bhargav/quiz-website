@@ -63,13 +63,13 @@ export default function LiveContests({ selected, setSelected }: Props) {
             );
           })}
         </div>
+      </ErrorLoading>
         {isValidating && (
           <div className="w-full">
             <Loader2 size={20} className="mx-auto animate-spin" />
           </div>
         )}
         <div ref={observerRef} />
-      </ErrorLoading>
     </div>
   );
 }
