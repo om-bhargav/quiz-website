@@ -105,7 +105,7 @@ export default function Page() {
       setPending(false);
     }
   };
-    const startDate = new Date(tournament?.startTime).toDateString();
+  const startDate = new Date(tournament?.startTime).toDateString();
   const startTime = new Date(tournament?.startTime).toLocaleTimeString();
   switch (tournamentStatus) {
     case "DRAFT":
@@ -113,9 +113,9 @@ export default function Page() {
       break;
 
     case "PUBLISHED":
-        buttonLabel = `Opens at ${startTime} on ${startDate}`;
-        isDisabled=true;
-        break;
+      buttonLabel = `Opens at ${startTime} on ${startDate}`;
+      isDisabled = true;
+      break;
     case "LIVE":
       if (isRegistered) {
         if (hasPlayed) {
@@ -127,9 +127,9 @@ export default function Page() {
           onClickHandler = handleJoinContest;
         }
       } else {
-          buttonLabel = "🎯 Register Now";
-          isDisabled = pending;
-          onClickHandler = handleRegister;
+        buttonLabel = "🎯 Register Now";
+        isDisabled = pending;
+        onClickHandler = handleRegister;
       }
       break;
 
@@ -143,17 +143,6 @@ export default function Page() {
       {/* Header */}
       <div className="p-4">
         <div className="relative bg-[#FFDB58] rounded-[16px] p-5 border-[4px] border-black overflow-hidden shadow-[6px_6px_0px_#000]">
-          {/* Background Image */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <Image
-              src="https://images.unsplash.com/photo-1754300681803-61eadeb79d10"
-              alt="Contest background"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-
           <div className="relative z-10">
             <h2 className="text-[24px] font-[900] uppercase mb-4">
               <HandleSkeleton loading={loading}>
@@ -195,7 +184,11 @@ export default function Page() {
                 </HandleSkeleton>
                 Joined
               </span>
-              <span>{Math.round(progress)}%</span>
+              <span>
+                <HandleSkeleton loading={loading}>
+                  {Math.round(progress)}%
+                </HandleSkeleton>
+              </span>
             </div>
 
             <div className="w-full h-[10px] bg-black/20 rounded-[6px] border-[2px] border-black overflow-hidden">
@@ -260,22 +253,18 @@ export default function Page() {
           <InfoCard
             icon={<Calendar />}
             value={
-              <HandleSkeleton loading={loading}>
-                {startDate}
-              </HandleSkeleton>
+              <HandleSkeleton loading={loading}>{startDate}</HandleSkeleton>
             }
             label="Date"
-            bg="bg-[#A5F3A0]" 
+            bg="bg-[#A5F3A0]"
           />
           <InfoCard
             icon={<Clock10 />}
             value={
-              <HandleSkeleton loading={loading}>
-                {startTime}
-              </HandleSkeleton>
+              <HandleSkeleton loading={loading}>{startTime}</HandleSkeleton>
             }
             label="Time"
-            bg="bg-[#A78BFA]" 
+            bg="bg-[#A78BFA]"
           />
         </div>
       </div>
@@ -301,14 +290,22 @@ export default function Page() {
         <button
           disabled={isDisabled || loading}
           onClick={onClickHandler}
-          className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[16px] shadow-[6px_6px_0px_#000] ${
-            !isDisabled
-              ? "bg-[#6366F1] text-white active:translate-y-[2px]"
-              : "bg-gray-300 text-black/40 cursor-not-allowed"
-          }`}
+          className={`w-full 
+              py-3 sm:py-4 md:py-5
+              rounded-[12px] sm:rounded-[14px]
+              border-[3px] sm:border-[4px] border-black 
+              uppercase font-[900] 
+              text-[8px] sm:text-[15px] md:text-[16px]
+              shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000]
+              transition-all duration-150
+              ${
+                !isDisabled
+                  ? "bg-[#6366F1] text-white active:translate-y-[2px]"
+                  : "bg-gray-300 text-black/40 cursor-not-allowed"
+              }`}
         >
           {pending || loading ? (
-            <Loader2 className="mx-auto animate-spin" />
+            <Loader2 className="mx-auto w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
           ) : (
             buttonLabel
           )}
@@ -341,7 +338,7 @@ function InfoCard({
   value,
   label,
   bg,
-  className
+  className,
 }: {
   icon: React.ReactNode;
   value: React.ReactNode;
@@ -361,9 +358,7 @@ function InfoCard({
         ${className ? className : ""}
       `}
     >
-      <div className="mb-1.5 sm:mb-2 text-lg sm:text-xl">
-        {icon}
-      </div>
+      <div className="mb-1.5 sm:mb-2 text-lg sm:text-xl">{icon}</div>
 
       <div className="text-[16px] sm:text-[18px] font-[900] leading-tight">
         {value}

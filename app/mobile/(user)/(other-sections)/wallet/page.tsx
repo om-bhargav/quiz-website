@@ -113,7 +113,7 @@ export default function Page() {
                 style={{ boxShadow: "4px 4px 0px #000000" }}
               >
                 <Plus className="w-6 h-6 stroke-[2.5px]" />
-                <span className="text-[14px] font-[800] uppercase">
+                <span className="text-[8px] md:text-[14px] font-[800] uppercase">
                   Add Money
                 </span>
               </Link>
@@ -126,7 +126,7 @@ export default function Page() {
                 style={{ boxShadow: "4px 4px 0px #000000" }}
               >
                 <TrendingUp className="w-6 h-6 stroke-[2.5px]" />
-                <span className="text-[14px] font-[800] uppercase">
+                <span className="text-[8px] md:text-[14px] font-[800] uppercase">
                   Withdraw
                 </span>
               </Link>
