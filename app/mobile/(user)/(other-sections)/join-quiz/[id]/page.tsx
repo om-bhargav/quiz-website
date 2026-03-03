@@ -295,7 +295,7 @@ export default function Page() {
               rounded-[12px] sm:rounded-[14px]
               border-[3px] sm:border-[4px] border-black 
               uppercase font-[900] 
-              text-[8px] sm:text-[15px] md:text-[16px]
+              text-[12px] sm:text-[15px] md:text-[16px]
               shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000]
               transition-all duration-150
               ${
