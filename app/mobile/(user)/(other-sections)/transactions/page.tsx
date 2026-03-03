@@ -74,7 +74,10 @@ export default function Page() {
     },
   };
 
-  const { data, isLoading, error,isValidating } = useSWR("/api/user/transactions", fetcher);
+  const { data, isLoading, error,isValidating } = useSWR("/api/user/transactions", fetcher,
+    {
+      revalidateOnFocus: false
+    });
   return (
     <Wrapper title="Transaction History">
       <div className="p-4">

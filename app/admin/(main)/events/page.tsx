@@ -15,7 +15,7 @@ export default function page() {
     error,
     isValidating,
     mutate,
-  } = useSWR("/api/admin/tournaments", fetcher);
+  } = useSWR("/api/admin/tournaments", fetcher,{revalidateOnFocus:false});
   const [open, setOpen] = useState(false);
   const [initialData, setInitialData] = useState(null);
   const [editOpen, setEditOpen] = useState(false);

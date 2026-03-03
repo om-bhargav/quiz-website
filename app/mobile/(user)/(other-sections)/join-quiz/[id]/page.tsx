@@ -13,6 +13,9 @@ import {
   CheckCircle2,
   Wallet,
   Loader2,
+  Clock1,
+  Clock10,
+  Calendar,
 } from "lucide-react";
 import { SlideToContinueModal } from "@/components/SlideToContinueModal";
 import useSWR from "swr";
@@ -55,7 +58,7 @@ export default function Page() {
     data: registration,
     isLoading: registrationLoading,
     isValidating: registrationValidating,
-    mutate
+    mutate,
   } = useSWR(`/api/user/tournaments/${id}/check-registration`, fetcher);
   const loading =
     isLoading ||
@@ -76,59 +79,57 @@ export default function Page() {
   const canJoin = userWalletBalance >= entryFee;
   const isRegistered = registration?.success === true;
   const registrationData = registration?.registration;
-  const hasPlayed = registrationData?.status==="PLAYED";
-  const [pending,setPending] = useState(false);
+  const hasPlayed = registrationData?.status === "PLAYED";
+  const [pending, setPending] = useState(false);
   let buttonLabel = "";
   let isDisabled = true;
   let onClickHandler: (() => void) | undefined = undefined;
-  const handleRegister = async () =>{
-    try{  
+  const handleRegister = async () => {
+    try {
       setPending(true);
-      const request = await fetch(`/api/user/tournaments/${id}/register`,{
+      const request = await fetch(`/api/user/tournaments/${id}/register`, {
         method: "POST",
         body: JSON.stringify({
-          tournamentId: id
-        })
-      })
+          tournamentId: id,
+        }),
+      });
       const response = await request.json();
-      if(!response.success){
+      if (!response.success) {
         throw Error(response.message);
       }
       toast.success(response.message);
       mutate();
-    }catch(error: any){
+    } catch (error: any) {
       toast.error(error.message);
-    }finally{
+    } finally {
       setPending(false);
     }
   };
+    const startDate = new Date(tournament?.startTime).toDateString();
+  const startTime = new Date(tournament?.startTime).toLocaleTimeString();
   switch (tournamentStatus) {
     case "DRAFT":
       buttonLabel = "⏳ Contest hasn't started yet";
       break;
 
     case "PUBLISHED":
-      if (isRegistered) {
-        buttonLabel = "✅ Registered";
-      } else {
-        buttonLabel = "🎯 Register Now";
-        isDisabled = pending;
-        onClickHandler = handleRegister;
-      }
-      break;
-
+        buttonLabel = `Opens at ${startTime} on ${startDate}`;
+        isDisabled=true;
+        break;
     case "LIVE":
       if (isRegistered) {
-        if(hasPlayed){
+        if (hasPlayed) {
           buttonLabel = "Already Played ✅";
           isDisabled = true;
-        }else{
+        } else {
           buttonLabel = "🚀 Join Quiz";
           isDisabled = false;
           onClickHandler = handleJoinContest;
         }
       } else {
-        buttonLabel = "❌ Registration Closed";
+          buttonLabel = "🎯 Register Now";
+          isDisabled = pending;
+          onClickHandler = handleRegister;
       }
       break;
 
@@ -136,6 +137,7 @@ export default function Page() {
       buttonLabel = "🏁 Contest has ended";
       break;
   }
+
   return (
     <Wrapper title="Join contest">
       {/* Header */}
@@ -255,6 +257,26 @@ export default function Page() {
             label="Win Prizes"
             bg="bg-[#A5F3A0]"
           />
+          <InfoCard
+            icon={<Calendar />}
+            value={
+              <HandleSkeleton loading={loading}>
+                {startDate}
+              </HandleSkeleton>
+            }
+            label="Date"
+            bg="bg-[#A5F3A0]" 
+          />
+          <InfoCard
+            icon={<Clock10 />}
+            value={
+              <HandleSkeleton loading={loading}>
+                {startTime}
+              </HandleSkeleton>
+            }
+            label="Time"
+            bg="bg-[#A78BFA]" 
+          />
         </div>
       </div>
 
@@ -279,25 +301,29 @@ export default function Page() {
         <button
           disabled={isDisabled || loading}
           onClick={onClickHandler}
-          className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] ${
+          className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[16px] shadow-[6px_6px_0px_#000] ${
             !isDisabled
               ? "bg-[#6366F1] text-white active:translate-y-[2px]"
               : "bg-gray-300 text-black/40 cursor-not-allowed"
           }`}
         >
-          {(pending || loading) ? <Loader2 className="mx-auto animate-spin"/>:buttonLabel}
+          {pending || loading ? (
+            <Loader2 className="mx-auto animate-spin" />
+          ) : (
+            buttonLabel
+          )}
         </button>
-        {
-          tournamentStatus==="COMPLETED" &&
-          <Link href={`/mobile/join-quiz/${id}/leaderboard`}> 
-          <button
-          disabled={loading}
-          className={`w-full mt-4 py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] bg-[#6366F1] text-white active:translate-y-[2px]`}
-          >
-          Go To LeaderBoard
-        </button>
+
+        {tournamentStatus === "COMPLETED" && (
+          <Link href={`/mobile/join-quiz/${id}/leaderboard`}>
+            <button
+              disabled={loading}
+              className="w-full mt-4 py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] bg-[#6366F1] text-white active:translate-y-[2px]"
+            >
+              Go To LeaderBoard
+            </button>
           </Link>
-        }
+        )}
       </div>
 
       <SlideToContinueModal
@@ -315,19 +341,37 @@ function InfoCard({
   value,
   label,
   bg,
+  className
 }: {
   icon: React.ReactNode;
-  value: any;
+  value: React.ReactNode;
   label: string;
   bg: string;
+  className?: string;
 }) {
   return (
     <div
-      className={`${bg} rounded-[12px] p-4 border-[3px] border-black shadow-[4px_4px_0px_#000]`}
+      className={`
+        ${bg}
+        rounded-[14px]
+        p-3 sm:p-4
+        border-[2px] sm:border-[3px]
+        border-black
+        shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]
+        ${className ? className : ""}
+      `}
     >
-      <div className="mb-2">{icon}</div>
-      <div className="text-[18px] font-[900]">{value}</div>
-      <p className="text-[10px] font-[800] uppercase text-black/60">{label}</p>
+      <div className="mb-1.5 sm:mb-2 text-lg sm:text-xl">
+        {icon}
+      </div>
+
+      <div className="text-[16px] sm:text-[18px] font-[900] leading-tight">
+        {value}
+      </div>
+
+      <p className="text-[9px] sm:text-[10px] font-[800] uppercase text-black/60 tracking-wide">
+        {label}
+      </p>
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default function page() {
     error,
     isValidating,
     mutate,
-  } = useSWR("/api/admin/users", fetcher);
+  } = useSWR("/api/admin/users", fetcher,{revalidateOnFocus:false});
   const [sending, setSending] = useState(false);
   const users = data?.users;
   const [search, setSearch] = useState("");

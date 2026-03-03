@@ -1,33 +1,40 @@
 import { colorMap } from "@/lib/constants";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
-interface CategoryCardProps {
+export interface Category {
   id: string | null;
   name: string;
   image: string;
+  tournamentsSize?: number;
+}
+
+interface CategoryCardProps {
+  redirectBase: string;
   color: string;
-  eventsCount?: number;
+  category: Category;
   selected?: boolean;
   onClick?: () => void;
 }
 
 export default function CategoryCard({
-  id,
-  name,
-  image,
+  redirectBase,
   color,
-  selected = false,
+  category,
   onClick,
-  eventsCount,
 }: CategoryCardProps) {
+  const { name, image, tournamentsSize } = category;
+
   return (
+    <Link className="w-full" href={`${redirectBase}/${category.id}`}>
     <button
       type="button"
       onClick={onClick}
       className={`
         ${color && colorMap[color]}
         flex-shrink-0
-        w-full h-full!
+        w-full h-full
+        mx-auto 
         rounded-[16px]
         border-[3px]
         overflow-hidden
@@ -37,16 +44,15 @@ export default function CategoryCard({
         active:scale-[0.97]
         focus:outline-none focus:ring-4 focus:ring-black/20
         px-2 py-2
-        ${selected ? "border-black" : "border-gray-300 bg-gray-50"}
+        border-gray-300 bg-gray-50
       `}
       style={{
-        boxShadow: selected
-          ? "5px 5px 0px #000000"
-          : "2px 2px 0px rgba(0,0,0,0.1)",
+        boxShadow:"5px 5px 0px #000000"
       }}
     >
       {/* Avatar */}
-      <Avatar className="
+      <Avatar
+        className="
         flex
         w-[48px] h-[48px]
         sm:w-[56px] sm:h-[56px]
@@ -54,16 +60,15 @@ export default function CategoryCard({
         mx-auto
         border-3 border-black
         items-center justify-center
-      ">
+      "
+      >
         <AvatarImage
           alt={name}
           src={image}
-          className={`w-full h-full object-cover ${
-            selected ? "" : "grayscale"
-          }`}
+          className={`w-full h-full object-cover`}
         />
         <AvatarFallback className="w-full uppercase h-full text-base sm:text-lg font-extrabold text-black">
-          {name[0]}
+          {name?.[0]}
         </AvatarFallback>
       </Avatar>
 
@@ -78,7 +83,7 @@ export default function CategoryCard({
             leading-tight
             truncate
             mb-1
-            ${selected ? "text-black" : "text-gray-500"}
+            text-black}
           `}
         >
           {name}
@@ -103,9 +108,10 @@ export default function CategoryCard({
             mb-1
           "
         >
-          {eventsCount}
+          {tournamentsSize ?? 0}
         </p>
       </div>
     </button>
+    </Link>
   );
 }

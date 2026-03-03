@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkUser } from "@/lib/checkAuth";
+import { getTournamentStatus } from "@/lib/getTournamentStatus";
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,12 +17,31 @@ export async function GET(req: NextRequest) {
     if (!categoryId) {
       throw Error("No Category Id Passed");
     }
+    const category = await prisma.category.findUnique({where:{
+      id: categoryId
+    }});
     const subcategories = await prisma.subCategory.findMany({
       where: {
         categoryId: categoryId,
       },
+      orderBy: { name: "asc" },
+      include: {
+        _count: {
+          select: { tournaments: true },
+        },
+        tournaments: true,
+      },
     });
-    return NextResponse.json({ success: true, subcategories }, { status: 200 });
+    const finalSubCategories = subcategories?.map(
+      ({ tournaments, ...rest }) => {
+        const tournamentsSize =
+          tournaments.filter((tournament) =>
+            ["PUBLISHED", "LIVE"].includes(getTournamentStatus(tournament))
+          )?.length ?? 0;
+        return { ...rest, tournamentsSize };
+      }
+    );
+    return NextResponse.json({ success: true, subCategories: finalSubCategories, category: category?.name }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message || "Internal Server Error" },
@@ -118,15 +138,15 @@ export async function DELETE(req: NextRequest) {
     const { subCategoryId } = await req.json();
     const exists = await prisma.subCategory.findUnique({
       where: {
-        id: subCategoryId
+        id: subCategoryId,
       },
     });
     if (!exists) {
       throw Error("Sub Category Does not exist!");
     }
     await prisma.subCategory.delete({
-      where:{
-        id: subCategoryId
+      where: {
+        id: subCategoryId,
       },
     });
     return NextResponse.json({ success: true }, { status: 200 });

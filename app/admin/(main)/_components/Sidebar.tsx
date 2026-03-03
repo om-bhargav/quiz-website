@@ -11,6 +11,7 @@ import {
   Menu,
   Trophy,
   Tags,
+  Images,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ const navItems = [
   { name: "Events", icon: Trophy, href: "/admin/events" },
   { name: "Plans", icon: Box, href: "/admin/plans" },
   { name: "Categories", icon: Tags, href: "/admin/categories" },
+  { name: "Banners", icon: Images, href: "/admin/banners" },
 ];
 
 export default function Sidebar({open,setOpen}:any) {

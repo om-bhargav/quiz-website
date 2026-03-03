@@ -35,7 +35,7 @@ export default function SubCategoriesPage({
     data: category,
     isLoading: loading,
     error: categoryError,
-  } = useSWR(`/api/categories?categoryId=${id}`, fetcher);
+  } = useSWR(`/api/categories?categoryId=${id}`, fetcher,{revalidateOnFocus:false});
   const { data, isLoading, error, mutate, isValidating } = useSWR(
     `/api/subcategories?categoryId=${id}`,
     fetcher

@@ -11,9 +11,18 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 export default function Page() {
   const router = useRouter();
-  const {data,isLoading: loading,error,mutate,isValidating} = useSWR("/api/user/wallet",fetcher);
+  const {
+    data,
+    isLoading: loading,
+    error,
+    mutate,
+    isValidating,
+  } = useSWR("/api/user/wallet", fetcher,
+    {
+      revalidateOnFocus: false
+    });
   const [amount, setAmount] = useState("");
-  const [pending,setPending] = useState(false);
+  const [pending, setPending] = useState(false);
   const balance = data?.wallet?.balance;
   const minWithdraw = 100;
   const maxWithdraw = 50000;
@@ -42,26 +51,26 @@ export default function Page() {
     },
   };
   const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     setPending(true);
-    try{
-      const request = await fetch("/api/user/withdraw",{
+    try {
+      const request = await fetch("/api/user/withdraw", {
         method: "POST",
-        body:JSON.stringify({
-          tokens: amount
-        })
+        body: JSON.stringify({
+          tokens: amount,
+        }),
       });
       const response = await request.json();
-      if(!response.success){
+      if (!response.success) {
         throw Error(response.message);
       }
       toast.success(response.message);
       setAmount("");
       await mutate();
-    }catch(error: any){
+    } catch (error: any) {
       toast.error(error.message);
-    }finally{
-      setPending(false)
+    } finally {
+      setPending(false);
     }
   };
   return (
@@ -85,7 +94,7 @@ export default function Page() {
           </div>
           <div className="text-[28px] font-[900]">
             <HandleSkeleton loading={loading || isValidating}>
-            ₹{balance}
+              ₹{balance}
             </HandleSkeleton>
           </div>
         </motion.div>
@@ -146,18 +155,16 @@ export default function Page() {
           type="submit"
           disabled={pending || !canWithdraw}
           className={`w-full py-4 rounded-[14px] border-[4px] border-black uppercase font-[900] text-[18px] tracking-wide flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] ${
-            (canWithdraw && !pending)
+            canWithdraw && !pending
               ? "bg-[#6366F1] text-white"
               : "bg-gray-300 text-black/50 cursor-not-allowed"
           }`}
         >
-          
-           {pending && <Loader2 size={20} className="animate-spin"/>}
-            <CreditCard className="w-6 h-6" />
+          {pending && <Loader2 size={20} className="animate-spin" />}
+          <CreditCard className="w-6 h-6" />
           {canWithdraw
             ? `Withdraw ₹${numAmount.toLocaleString()}`
             : "Enter amount"}
-           
         </motion.button>
       </motion.form>
     </Wrapper>

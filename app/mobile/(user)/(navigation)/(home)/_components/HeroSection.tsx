@@ -1,49 +1,42 @@
 "use client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetcher } from "@/lib/fetcher";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import useSWR from "swr";
 
-// Images chosen for "floating" depth effect - subject-focused, not full-bleed
-const SLIDES = [
-  {
-    id: 1,
-    title: "Last week's top winner",
-    prize: "₹10,00,000",
-    sub: "Priya S. won the Mega Quiz",
-    image: "https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&q=80",
-  },
-  {
-    id: 2,
-    title: "Biggest prize pool",
-    prize: "₹25,00,000",
-    sub: "IPL Championship Quiz",
-    image: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?w=400&q=80",
-  },
-  {
-    id: 3,
-    title: "Join & win real cash",
-    prize: "₹50 – ₹10L",
-    sub: "Play now, pay entry, win big",
-    image: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?w=400&q=80",
-  },
-];
+interface Slide{
+  id: string;
+  title: string;
+  mainHeadline: string
+  subtitle: string
+  image: string
+}
 
 const INTERVAL_MS = 4500;
 
 export default function HeroSection() {
   const [index, setIndex] = useState(0);
-
+  const {data,isLoading,isValidating,error} = useSWR("/api/banner",fetcher,{revalidateIfStale: false,revalidateOnFocus: false});
+  const loading = isLoading || isValidating;
+  const SLIDES = data?.data ?? [];
   useEffect(() => {
-    const t = setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, INTERVAL_MS);
-    return () => clearInterval(t);
-  }, []);
+    if(!loading){
+      const t = setInterval(() => {
+        setIndex((i) => (i + 1) % SLIDES.length);
+      }, INTERVAL_MS);
+      return () => clearInterval(t);
+    }
+  }, [loading]);
 
   return (
     <div
       className="relative h-[200px] rounded-[16px] border-[3px] border-black overflow-hidden"
       style={{ boxShadow: "8px 8px 0px #000000" }}
     >
+      {
+        loading ? <Skeleton className="h-full w-full bg-gradient-to-br from-primary/80 to-primary-90"/>:
+      <>
       <div
         className="absolute inset-0 flex transition-transform duration-500 ease-out"
         style={{
@@ -51,7 +44,7 @@ export default function HeroSection() {
           transform: `translateX(-${index * (100 / SLIDES.length)}%)`,
         }}
       >
-        {SLIDES.map((s) => (
+        {SLIDES.map((s: Slide) => (
           <div
             key={s.id}
             className="relative flex items-center pl-5 pr-2 flex-1 min-w-0 bg-gradient-to-br from-amber-100 via-amber-50 to-yellow-50"
@@ -62,8 +55,8 @@ export default function HeroSection() {
               <p className="text-[11px] font-[800] uppercase text-black/70 tracking-wide">
                 {s.title}
               </p>
-              <p className="text-[24px] font-[900] leading-tight mt-0.5">{s.prize}</p>
-              <p className="text-[11px] font-[700] text-black/60 mt-1">{s.sub}</p>
+              <p className="text-[24px] font-[900] leading-tight mt-0.5">{s.mainHeadline}</p>
+              <p className="text-[11px] font-[700] text-black/60 mt-1">{s.subtitle}</p>
             </div>
 
             {/* Image with no background – depth via drop-shadow only */}
@@ -84,9 +77,8 @@ export default function HeroSection() {
         ))}
       </div>
 
-      {/* Dots */}
       <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-        {SLIDES.map((_, i) => (
+        {SLIDES.map((_: any, i: number) => (
           <button
             key={i}
             type="button"
@@ -98,6 +90,8 @@ export default function HeroSection() {
           />
         ))}
       </div>
+      </>
+      }
     </div>
   );
 }

@@ -42,7 +42,11 @@ export default function Page() {
   const router = useRouter();
   const { data, isLoading, error } = useSWR(
     `/api/user/tournaments/${id}/join`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false
+    }
   );
   const tournament = data?.tournament;
   const QUESTIONS = tournament?.questions;
@@ -69,15 +73,19 @@ export default function Page() {
     return () => clearInterval(interval);
   }, [timeConsumed, tournament?.durationPerQ]);
 
-const submitAnswer = async (questionId: string,optionId: string,timeTaken: number) => {
-  setSubmitting(true);
+  const submitAnswer = async (
+    questionId: string,
+    optionId: string,
+    timeTaken: number
+  ) => {
+    setSubmitting(true);
     try {
       const request = await fetch(`/api/user/tournaments/${id}/answer`, {
         method: "POST",
         body: JSON.stringify({
           questionId: questionId,
           optionId: optionId,
-          timeTaken: timeTaken
+          timeTaken: timeTaken,
         }),
       });
       const response = await request.json();
@@ -89,29 +97,33 @@ const submitAnswer = async (questionId: string,optionId: string,timeTaken: numbe
     } finally {
       setSubmitting(false);
     }
-}
-// const endTournament = async (tournamentId: string) => {
-//     setSubmitting(true);
-//     try {
-//       const request = await fetch(`/api/user/tournaments/${id}/end`, {
-//         method: "POST"
-//       });
-//       const response = await request.json();
-//       if (!response.success) {
-//         throw Error(response.message);
-//       }
-//     } catch (error: any) {
-//       toast.error(error.message);
-//     } finally {
-//       setSubmitting(false);
-//     }
-// }
+  };
+  // const endTournament = async (tournamentId: string) => {
+  //     setSubmitting(true);
+  //     try {
+  //       const request = await fetch(`/api/user/tournaments/${id}/end`, {
+  //         method: "POST"
+  //       });
+  //       const response = await request.json();
+  //       if (!response.success) {
+  //         throw Error(response.message);
+  //       }
+  //     } catch (error: any) {
+  //       toast.error(error.message);
+  //     } finally {
+  //       setSubmitting(false);
+  //     }
+  // }
   const handleNext = async () => {
     if (selectedOption) {
       // console.log(question?.id,selectedOption,tournament?.durationPerQ - timeConsumed);
-      await submitAnswer(question?.id,selectedOption,tournament?.durationPerQ - timeConsumed);
-      if(currentIndex===(QUESTIONS?.length-1)){
-          toast.success("Tournament Played Successfully!");
+      await submitAnswer(
+        question?.id,
+        selectedOption,
+        tournament?.durationPerQ - timeConsumed
+      );
+      if (currentIndex === QUESTIONS?.length - 1) {
+        toast.success("Tournament Played Successfully!");
       }
     }
     if (currentIndex >= QUESTIONS?.length - 1) return;
@@ -233,15 +245,17 @@ const submitAnswer = async (questionId: string,optionId: string,timeTaken: numbe
                   whileTap={{ scale: 0.97 }}
                   disabled={submitting}
                   onClick={
-                    currentIndex < QUESTIONS?.length - 1
-                      ? handleNext
-                      : goToHome
+                    currentIndex < QUESTIONS?.length - 1 ? handleNext : goToHome
                   }
                   className="w-full py-4 rounded-[14px] border-[4px] border-black bg-[#6366F1] text-white uppercase font-[900] text-[18px] shadow-[6px_6px_0px_#000] active:translate-y-[2px]"
                 >
                   {currentIndex < QUESTIONS?.length - 1
-                    ? submitting ? "Submitting...":"Next Question →"
-                    :submitting ? "Finishing...":"Finish Quiz → Go To Home"}
+                    ? submitting
+                      ? "Submitting..."
+                      : "Next Question →"
+                    : submitting
+                    ? "Finishing..."
+                    : "Finish Quiz → Go To Home"}
                 </motion.button>
               </motion.div>
             )}

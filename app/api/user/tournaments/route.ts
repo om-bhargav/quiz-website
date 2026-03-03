@@ -7,7 +7,12 @@ export async function GET(req: NextRequest) {
     const filter = searchParams.get("filter");
     const search = searchParams.get("search");
     const categoryId = searchParams.get("categoryId");
-    const defaultStatus = ["LIVE","PUBLISHED"];
+    const cursor = searchParams.get("cursor");
+    const subCategoryId = searchParams.get("subCategoryId");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const defaultStatus = ["LIVE", "PUBLISHED"];
+    let isNextPage = false;
+    let nextCursor = null;
     if (filter) {
       defaultStatus.push(filter);
     }
@@ -23,8 +28,12 @@ export async function GET(req: NextRequest) {
     if (categoryId) {
       whereClause.categoryId = categoryId;
     }
-
+    if (subCategoryId) {
+      whereClause.subCategoryId = subCategoryId;
+    }
     const tournaments = await prisma.tournament.findMany({
+      take: limit + 1,
+      cursor: cursor ? { id: cursor } : undefined,
       where: whereClause,
       orderBy: { startTime: "asc" },
       select: {
@@ -42,8 +51,12 @@ export async function GET(req: NextRequest) {
         _count: { select: { registration: true } },
       },
     });
+    if(tournaments.length > limit){
+      const lastItem = tournaments.pop();
+      nextCursor = lastItem!.id;
+    }
     const formatted = tournaments
-      ?.map(({ winningSeats,entryFee,prizePool, _count, ...rest }) => ({
+      ?.map(({ winningSeats, entryFee, prizePool, _count, ...rest }) => ({
         ...rest,
         prizePool: Math.round(prizePool),
         entryFee: Math.round(entryFee),
@@ -52,7 +65,7 @@ export async function GET(req: NextRequest) {
       }))
       ?.filter((tournament) => defaultStatus.includes(tournament.status));
     return NextResponse.json(
-      { success: true, tournaments: formatted },
+      { success: true, tournaments: formatted,isLeft: isNextPage, nextCursor },
       { status: 200 }
     );
   } catch (error: any) {

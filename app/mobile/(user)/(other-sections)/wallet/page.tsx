@@ -32,7 +32,13 @@ export default function Page() {
       transition: { duration: 0.4, ease: "easeOut" },
     },
   };
-  const { data, isLoading, error,isValidating } = useSWR("/api/user/wallet", fetcher);
+  const { data, isLoading, error, isValidating } = useSWR(
+    "/api/user/wallet",
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
   return (
     <Wrapper title="Wallet">
       <motion.div
@@ -56,7 +62,7 @@ export default function Page() {
           </div>
           <div className="text-[32px] font-[900] mb-1">
             <HandleSkeleton loading={isLoading || isValidating}>
-              ₹{data?.wallet?.balance.toLocaleString("en-IN")}
+              ₹{data?.wallet?.balance?.toLocaleString("en-IN")}
             </HandleSkeleton>
           </div>
           <p className="text-[12px] font-[700] text-black/60">
@@ -82,7 +88,7 @@ export default function Page() {
                 </p>
                 <div className="text-[22px] font-[900]">
                   <HandleSkeleton loading={isLoading || isValidating}>
-                    ₹{data?.wallet?.balance?.toLocaleString()}
+                    ₹{data?.wallet?.balance?.toLocaleString("en-IN")}
                   </HandleSkeleton>
                 </div>
               </div>

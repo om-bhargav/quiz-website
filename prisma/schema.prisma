@@ -16,6 +16,14 @@ enum UserStatus {
   SUSPENDED
 }
 
+model Banner{
+  id String @unique @default(uuid())
+  title String
+  mainHeadline String
+  subtitle String
+  image String
+}
+
 model User {
   id String @id @default(uuid())
   name String?

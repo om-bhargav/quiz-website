@@ -23,14 +23,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!wallet) return NextResponse.json({ success: false, message: "Wallet error" }, { status: 400 });
 
     const now = new Date();
-    if (now < tournament.windowOpenTime) {
+    if (now < tournament.startTime) {
       return NextResponse.json({ success: false, message: "Registration is not open yet" }, { status: 400 });
     }
 
-    const registrationDeadline = new Date(tournament.startTime.getTime());
+    const registrationDeadline = new Date(tournament.endTime.getTime());
 
     if (now > registrationDeadline) {
-      return NextResponse.json({ success: false, message: "Registration closed (Must join 15 mins before start)" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "Tournament is Completed!" }, { status: 400 });
     }
 
     const existing = await prisma.registration.findUnique({
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       })
     ]);
 
-    return NextResponse.json({ success: true, message: "Joined successfully" }, { status: 200 });
+    return NextResponse.json({ success: true, message: "Registered successfully" }, { status: 200 });
 
   } catch {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });

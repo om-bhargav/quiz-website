@@ -14,12 +14,18 @@ import { colorMap } from "@/lib/constants";
 import { signOut } from "next-auth/react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function page() {
-  const { data, isLoading, error,isValidating } = useSWR("/api/user/profile", fetcher);
+  const { data, isLoading, error, isValidating } = useSWR(
+    "/api/user/profile",
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
 
   const menuItems = [
     {
@@ -61,22 +67,23 @@ export default function page() {
       },
     },
   ];
+
   return (
-    <div className="w-full grid gap-6 md:gap-7 p-4 md:p-5 mx-auto">
-      <div className="space-y-5 md:space-y-6">
-        <h3 className="uppercase text-2xl md:text-3xl font-extrabold">
+    <div className="w-full grid gap-5 md:gap-7 p-3 md:p-5 mx-auto">
+      <div className="space-y-4 md:space-y-6">
+        <h3 className="uppercase text-xl md:text-3xl font-extrabold">
           My profile
         </h3>
 
         <div
-          className={`flex flex-col relative p-5 md:p-8 gap-5 overflow-hidden items-center border-4 md:border-5 border-black min-h-[280px] md:min-h-[340px] rounded-xl shadow-[5px_5px_0px_3px_black] md:shadow-[8px_8px_0px_0px_black] ${colorMap["amber"]}`}
+          className={`flex flex-col relative p-4 md:p-8 gap-4 md:gap-5 overflow-hidden items-center border-4 md:border-5 border-black min-h-[220px] md:min-h-[340px] rounded-xl shadow-[4px_4px_0px_2px_black] md:shadow-[8px_8px_0px_0px_black] ${colorMap["amber"]}`}
         >
           {/* Top Profile Section */}
-          <div className="flex w-full gap-4 md:gap-6 justify-start items-center">
-            <div className="h-20 w-20 md:h-30 md:w-30 relative rounded-xl overflow-hidden border-4 md:border-5 border-black shadow-[4px_4px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]">
+          <div className="flex w-full gap-3 md:gap-6 justify-start items-center">
+            <div className="h-16 w-16 md:h-30 md:w-30 relative rounded-xl overflow-hidden border-4 md:border-5 border-black shadow-[3px_3px_0px_0px_black] md:shadow-[6px_6px_0px_0px_black]">
               <Avatar className="w-full h-full rounded-none bg-transparent">
                 <AvatarImage alt={"Loading"} src={"/trophfee.png"} />
-                <AvatarFallback className="bg-transparent uppercase font-bold text-lg text-black">
+                <AvatarFallback className="bg-transparent uppercase font-bold text-base md:text-lg text-black">
                   <Suspense fallback={<SkeletonView />}>
                     <HandleLoading loading={isLoading || isValidating}>
                       {data?.user?.name?.[0]}
@@ -87,12 +94,12 @@ export default function page() {
             </div>
 
             <div className="grid gap-1 md:gap-3">
-              <div className="text-lg md:text-2xl font-extrabold uppercase">
+              <div className="text-base md:text-2xl font-extrabold uppercase break-words">
                 <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.name}
                 </HandleLoading>
               </div>
-              <div className="text-sm md:text-lg! lowercase break-all">
+              <div className="text-xs md:text-lg lowercase break-all">
                 <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.email}
                 </HandleLoading>
@@ -101,27 +108,27 @@ export default function page() {
           </div>
 
           {/* Stats Section */}
-          <div className="flex-1 grid grid-cols-2 h-full w-full gap-4 md:gap-6">
-            <div className="flex flex-col items-center justify-between py-4 md:py-6 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
-              <Clock strokeWidth={3} size={20} className="md:w-6 md:h-6" />
-              <div className="font-extrabold text-lg md:text-2xl">
+          <div className="flex-1 grid grid-cols-2 h-full w-full gap-3 md:gap-6">
+            <div className="flex flex-col items-center justify-between py-3 md:py-6 bg-white border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
+              <Clock strokeWidth={3} size={18} className="md:w-6 md:h-6" />
+              <div className="font-extrabold text-base md:text-2xl">
                 <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.wallet?.balance}
                 </HandleLoading>
               </div>
-              <div className="uppercase text-xs md:text-sm text-muted-background font-bold">
+              <div className="uppercase text-[10px] md:text-sm text-muted-background font-bold">
                 tokens
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-between py-4 md:py-6 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
-              <Trophy strokeWidth={3} size={20} className="md:w-6 md:h-6" />
-              <div className="font-extrabold text-lg md:text-2xl">
+            <div className="flex flex-col items-center justify-between py-3 md:py-6 bg-white border-3 border-black rounded-xl shadow-[3px_3px_0px_0px_black] md:shadow-[5px_5px_0px_0px_black]">
+              <Trophy strokeWidth={3} size={18} className="md:w-6 md:h-6" />
+              <div className="font-extrabold text-base md:text-2xl">
                 <HandleLoading loading={isLoading || isValidating}>
                   {data?.user?.tournamentsLength}
                 </HandleLoading>
               </div>
-              <div className="uppercase text-xs md:text-sm text-muted-background font-bold">
+              <div className="uppercase text-[10px] md:text-sm text-muted-background font-bold">
                 quizes
               </div>
             </div>
@@ -130,8 +137,10 @@ export default function page() {
       </div>
 
       {/* Menu Section */}
-      <div className="space-y-3 md:space-y-4">
-        <h2 className="uppercase text-xl md:text-2xl font-extrabold">menu</h2>
+      <div className="space-y-2 md:space-y-4">
+        <h2 className="uppercase text-lg md:text-2xl font-extrabold">
+          menu
+        </h2>
 
         <div className="grid gap-2 md:gap-3">
           {menuItems.map((item, index) => {
@@ -154,5 +163,5 @@ function HandleLoading({
 }
 
 function SkeletonView() {
-  return <Skeleton className="h-6 w-25 bg-gray-100/80" />;
+  return <Skeleton className="h-5 w-20 bg-gray-100/80" />;
 }

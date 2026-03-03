@@ -43,7 +43,11 @@ export default function Page() {
   }, []);
   const { data, isLoading, isValidating, error } = useSWR(
     canFetchLeaderBoard ? `/api/user/tournaments/${id}/leaderboard` : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false
+    }
   );
   const leaderboard = data?.leaderboard;
   const loading = isLoading || isValidating || ending;
@@ -72,6 +76,7 @@ export default function Page() {
             <div className="flex md:items-end max-md:items-center justify-center max-md:flex-col md:gap-10 pb-6 pt-14 px-2">
               {top3?.map((player: any, index: number) => {
                 const isFirst = index === 0;
+
                 return (
                   <motion.div
                     key={index}
@@ -81,11 +86,11 @@ export default function Page() {
                     className="flex flex-col items-center w-[110px]"
                   >
                     <div
-                      className={`w-${isFirst ? "16" : "14"} h-${
-                        isFirst ? "16" : "14"
-                      } rounded-full border-[3px] border-black flex items-center justify-center mb-3 shadow-[4px_4px_0px_#000] ${
-                        isFirst ? "bg-[#FFDB58]" : "bg-white"
-                      }`}
+                      className={`${
+                        isFirst
+                          ? "w-16 h-16 bg-[#FFDB58]"
+                          : "w-14 h-14 bg-white"
+                      } rounded-full border-[3px] border-black flex items-center justify-center mb-3 shadow-[4px_4px_0px_#000]`}
                     >
                       {isFirst ? (
                         <Trophy className="w-7 h-7 text-amber-600" />
@@ -116,9 +121,11 @@ export default function Page() {
           </div>
         </motion.div>
       </ErrorLoading>
+
       {/* 📋 ALL PLAYERS */}
       <div className="px-4">
         <h2 className="text-[16px] font-[900] uppercase mb-3">All Players</h2>
+
         <ErrorLoading
           error={error}
           loading={loading}
@@ -144,11 +151,13 @@ export default function Page() {
                   <p className="text-[14px] font-[800] uppercase truncate">
                     {player.name} {player?.isMe && "(You)"}
                   </p>
+
                   <div className="flex items-center gap-3 mt-1 text-[11px] font-[700] text-black/70">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
                       {formatTime(player.time)}
                     </span>
+
                     <span className="flex items-center gap-1">
                       <FileQuestion className="w-3.5 h-3.5" />
                       {player.score}

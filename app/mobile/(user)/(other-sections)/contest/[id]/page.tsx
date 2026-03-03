@@ -13,6 +13,7 @@ import SpecialIcon from "@/components/SpecialIcon";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import ErrorLoading from "@/components/ErrorLoading";
+import useGoBack from "@/components/GoBack";
 // const quizzes = [
 //   {
 //     id: 1,
@@ -119,64 +120,40 @@ const filters = [
 ];
 export default function page() {
   const { id } = useParams();
+  const goBack = useGoBack();
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const {data,isLoading,error} = useSWR(`/api/user/tournaments/${id}`,fetcher);
+  const { data, isLoading, error } = useSWR(
+    `/api/user/tournaments/${id}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
   const item = !isLoading && data?.tournament;
   return (
     <div className="flex flex-col h-full justify-start w-full">
       <div className="sticky top-0 z-50 bg-gray-100">
         <div
-          className={`min-h-[100px] flex flex-col p-4 flex justify-between ${colorMap["amber"]} border-b-8 border-black w-full`}
+          className={`min-h-[80px] md:min-h-[100px] 
+                            flex flex-col justify-between 
+                            p-3 md:p-4 
+                            ${colorMap["amber"]} 
+                            border-b-6 md:border-b-8 border-black 
+                            w-full`}
         >
-          <div className="flex justify-between flex-1 gap-4 items-center">
-            <Link href={"/mobile"}>
-              <SpecialIcon Icon={ArrowLeft} />
-            </Link>
-            <span className="text-lg md:text-2xl font-extrabold uppercase md:whitespace-nowrap">
-              Contest details
+          <div className="flex justify-start flex-1 gap-3 items-center">
+            <SpecialIcon Icon={ArrowLeft} onClick={goBack} />
+
+            <span
+              className="text-base md:text-2xl 
+                                   font-extrabold uppercase 
+                                   leading-tight 
+                                   break-words md:whitespace-nowrap"
+            >
+              contest details
             </span>
-          <SpecialIcon onClick={()=>setFilterOpen(!filterOpen)} Icon={Filter} />
           </div>
-          {/* Filter Dropdown */}
-          {filterOpen && (
-            <div className="w-full my-3 pb-4">
-              <div
-                className="bg-white rounded-[12px] border-[3px] border-black p-3"
-                style={{
-                  boxShadow: "4px 4px 0px #000000",
-                }}
-              >
-                <p className="text-[12px] font-[800] uppercase mb-2 text-black/60">
-                  Filter by Prize
-                </p>
-                <div className="space-y-2">
-                  {filters.map((filter) => (
-                    <button
-                      key={filter.id}
-                      onClick={() => {
-                        setSelectedFilter(filter.id);
-                        setFilterOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-[8px] border-[2px] border-black text-[13px] font-[800] uppercase transition-all ${
-                        selectedFilter === filter.id
-                          ? "bg-[#A5F3FC]"
-                          : "bg-white hover:bg-gray-50"
-                      }`}
-                      style={{
-                        boxShadow:
-                          selectedFilter === filter.id
-                            ? "2px 2px 0px #000000"
-                            : "none",
-                      }}
-                    >
-                      {filter.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         <div className="my-5 mx-2 space-y-3">
           <div className="flex justify-between items-center">
@@ -192,19 +169,24 @@ export default function page() {
               Featured
             </div>
           </div>
-          <ErrorLoading error={error} loading={isLoading} dataLength={item ? 1:0} emptyMessage="Tournament Does Not Exist!">
+          <ErrorLoading
+            error={error}
+            loading={isLoading}
+            dataLength={item ? 1 : 0}
+            emptyMessage="Tournament Does Not Exist!"
+          >
             <QuizCard
-            id={item.id}
-            prizePool={item.prizePool}
-            entryFee={item.entryFee}
-            index={0}
-            difficulty={item?.difficulty}
-            totalSeats={item.totalSeats}
-            seatsLeft={item.seatsLeft}
-            questions={item.questions}
-            title={item.title}
+              id={item.id}
+              prizePool={item.prizePool}
+              entryFee={item.entryFee}
+              index={0}
+              difficulty={item?.difficulty}
+              totalSeats={item.totalSeats}
+              seatsLeft={item.seatsLeft}
+              questions={item.questions}
+              title={item.title}
             />
-            </ErrorLoading>
+          </ErrorLoading>
         </div>
       </div>
       <div className="grid gap-4 mx-3">
@@ -214,25 +196,30 @@ export default function page() {
           </div>
         </div>
         <div className="grid gap-6">
-          <ErrorLoading error={error} loading={isLoading} dataLength={data?.recommendations?.length} emptyMessage="No Related Tournaments Found!">
-          {data?.recommendations?.map((quiz: any,index: number) => {
-            return (
-              quiz.id !== item.id && (
-                <QuizCard
-                  seatsLeft={quiz.seatsLeft}
-                  totalSeats={quiz.totalSeats}
-                  key={quiz.id}
-                  id={quiz.id}
-                  prizePool={quiz.prizePool}
-                  entryFee={quiz.entryFee}
-                  index={index}
-                  difficulty={quiz.difficulty}
-                  questions={quiz.totalQuestions}
-                  title={quiz.title}
-                />
-              )
-            );
-          })}
+          <ErrorLoading
+            error={error}
+            loading={isLoading}
+            dataLength={data?.recommendations?.length}
+            emptyMessage="No Related Tournaments Found!"
+          >
+            {data?.recommendations?.map((quiz: any, index: number) => {
+              return (
+                quiz.id !== item.id && (
+                  <QuizCard
+                    seatsLeft={quiz.seatsLeft}
+                    totalSeats={quiz.totalSeats}
+                    key={quiz.id}
+                    id={quiz.id}
+                    prizePool={quiz.prizePool}
+                    entryFee={quiz.entryFee}
+                    index={index}
+                    difficulty={quiz.difficulty}
+                    questions={quiz.totalQuestions}
+                    title={quiz.title}
+                  />
+                )
+              );
+            })}
           </ErrorLoading>
         </div>
       </div>
@@ -246,7 +233,7 @@ interface QuizCardProps {
   entryFee: string;
   prizePool: string;
   totalSeats: number;
-  seatsLeft: number
+  seatsLeft: number;
   index: number;
   questions?: number;
   difficulty: "EASY" | "MEDIUM" | "HARD" | "EXPERT";
@@ -274,7 +261,7 @@ export function QuizCard({
 
   const percentage = useMemo(() => {
     if (!totalSeats) return 0;
-    return Math.min(100, ((totalSeats-seatsLeft) / totalSeats) * 100);
+    return Math.min(100, ((totalSeats - seatsLeft) / totalSeats) * 100);
   }, [totalSeats]);
 
   const rotation = index % 2 === 0 ? "-0.6deg" : "0.6deg";
@@ -282,30 +269,32 @@ export function QuizCard({
   const colors = Object.values(colorMap);
   return (
     <Card
-      className={`relative my-4 p-4 rounded-[14px] border-[3px] border-black overflow-hidden
-                   transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] ${colors[Math.floor(Math.random()* colors.length)]}`}
+      className={`relative my-3 md:my-4 p-3 md:p-4 rounded-[14px] border-[3px] border-black overflow-hidden
+  transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] ${
+    colors[Math.floor(Math.random() * colors.length)]
+  }`}
       style={{
-        boxShadow: "6px 6px 0px #000000",
+        boxShadow: "5px 5px 0px #000000",
         transform: `rotate(${rotation})`,
       }}
     >
       <CardContent className="relative z-10 p-0">
         {/* Header */}
-        <div className="mb-3">
-          <h3 className="text-[18px] font-[900] uppercase leading-tight mb-2">
+        <div className="mb-2 md:mb-3">
+          <h3 className="text-[15px] md:text-[18px] font-[900] uppercase leading-snug md:leading-tight mb-2 break-words">
             {title}
           </h3>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             <div className="flex items-center gap-1 bg-black text-white px-2 py-1 rounded-[6px]">
               <Coins className="w-3 h-3" />
-              <span className="text-[11px] font-[800] uppercase">
+              <span className="text-[10px] md:text-[11px] font-[800] uppercase">
                 Entry: {entryFee}
               </span>
             </div>
 
             <div className="flex-1 bg-white/90 px-2 py-1 rounded-[6px] border-[2px] border-black">
-              <span className="text-[11px] font-[800] uppercase">
+              <span className="text-[10px] md:text-[11px] font-[800] uppercase">
                 Prize: ₹{prizePool}
               </span>
             </div>
@@ -313,20 +302,20 @@ export function QuizCard({
         </div>
 
         {/* Participants */}
-        <div className="mb-3">
+        <div className="mb-2 md:mb-3">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1">
-              <Users className="w-4 h-4 stroke-[2.5px]" />
-              <span className="text-[11px] font-[800] uppercase">
-                {(totalSeats-seatsLeft)}/{totalSeats} Joined
+              <Users className="w-3 h-3 md:w-4 md:h-4 stroke-[2.5px]" />
+              <span className="text-[10px] md:text-[11px] font-[800] uppercase">
+                {totalSeats - seatsLeft}/{totalSeats} Joined
               </span>
             </div>
-            <span className="text-[11px] font-[800] uppercase">
+            <span className="text-[10px] md:text-[11px] font-[800] uppercase">
               {Math.round(percentage)}%
             </span>
           </div>
 
-          <div className="w-full h-[10px] bg-black/20 rounded-[6px] border-[2px] border-black overflow-hidden">
+          <div className="w-full h-[8px] md:h-[10px] bg-black/20 rounded-[6px] border-[2px] border-black overflow-hidden">
             <div
               className="h-full bg-black transition-all duration-300"
               style={{ width: `${percentage}%` }}
@@ -334,11 +323,11 @@ export function QuizCard({
           </div>
         </div>
 
-        {/* Detail Only Section */}
-        <div className="mb-3 flex items-center justify-end gap-2">
+        {/* Detail Section */}
+        <div className="mb-2 md:mb-3 flex items-center justify-end gap-1 md:gap-2">
           <div className="flex items-center gap-1 bg-white/90 px-2 py-1 rounded-[6px] border-[2px] border-black">
             <FileQuestion className="w-3 h-3 stroke-[2.5px]" />
-            <span className="text-[11px] font-[800] uppercase">
+            <span className="text-[10px] md:text-[11px] font-[800] uppercase">
               {questions} Questions
             </span>
           </div>
@@ -350,7 +339,7 @@ export function QuizCard({
             }}
           >
             <Zap className="w-3 h-3 stroke-[2.5px]" />
-            <span className="text-[11px] font-[800] uppercase">
+            <span className="text-[10px] md:text-[11px] font-[800] uppercase">
               {difficulty}
             </span>
           </div>
@@ -358,16 +347,20 @@ export function QuizCard({
 
         {/* Button */}
         <Link href={`/mobile/join-quiz/${id}`}>
-        <Button
-          className="w-full bg-gray-800 hover:bg-black text-white py-7 text-xl rounded-[10px]
-          border-[3px] border-black uppercase font-[900] text-[14px]"
-          style={{
-            boxShadow: "4px 4px 0px rgba(0,0,0,0.3)",
-          }}
+          <Button
+            className="w-full bg-gray-800 hover:bg-black text-white 
+        py-5 md:py-7 
+        rounded-[10px]
+        border-[3px] border-black 
+        uppercase font-[900] 
+        text-[13px] md:text-[14px]"
+            style={{
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.3)",
+            }}
           >
-          {"Join Quiz →"}
-        </Button>
-          </Link>
+            {"Join Quiz →"}
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

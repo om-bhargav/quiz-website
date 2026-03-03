@@ -16,7 +16,7 @@ import { AnalyticChart } from "./AnalyticChart";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function AnalyticsSection() {
-  const { data, isLoading, error } = useSWR("/api/admin/analytics", fetcher);
+  const { data, isLoading, error } = useSWR("/api/admin/analytics", fetcher,{revalidateOnFocus:false});
 
   if (isLoading) {
     return (

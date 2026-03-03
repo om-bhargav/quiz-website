@@ -12,7 +12,10 @@ import Link from "next/link";
 export default function page() {
   const { data, isLoading, error, isValidating } = useSWR(
     "/api/user/profile/played-quiz",
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
   );
   return (
     <Wrapper title="Played Quiz">

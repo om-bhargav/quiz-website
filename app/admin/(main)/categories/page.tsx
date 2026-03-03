@@ -16,7 +16,7 @@ export default function page() {
     error,
     isValidating,
     mutate,
-  } = useSWR("/api/categories", fetcher);
+  } = useSWR("/api/categories", fetcher,{revalidateOnFocus:false});
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [initialData, setInitialData] = useState<any>(null);

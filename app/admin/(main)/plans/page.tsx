@@ -16,7 +16,7 @@ export default function page() {
     error,
     isValidating,
     mutate,
-  } = useSWR("/api/admin/plans", fetcher);
+  } = useSWR("/api/admin/plans", fetcher,{revalidateOnFocus:false});
   const [pending, setPending] = useState(false);
   const handleDelete = async (planId: string) => {
     setPending(true);
