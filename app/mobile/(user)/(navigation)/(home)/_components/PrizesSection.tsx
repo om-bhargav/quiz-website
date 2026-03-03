@@ -17,6 +17,7 @@ export default function PrizesSection() {
         sm:py-6 sm:px-6
         flex flex-col items-center justify-center text-center
         space-y-3 sm:space-y-2
+        max-md:gap-1
         ${colorMap["blue"]}
       `}
     >

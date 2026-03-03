@@ -8,6 +8,7 @@ import { colorMap } from "@/lib/constants";
 import ErrorLoading from "@/components/ErrorLoading";
 import { Category } from "../../_components/CategoryCard";
 import { useParams } from "next/navigation";
+import { CategoryCardSkeleton } from "@/components/CategoryCard";
 export default function page() {
   const { id } = useParams();
   const { data, isLoading, error, isValidating } = useSWR(
@@ -21,11 +22,14 @@ export default function page() {
   const subCategories = data?.subCategories ?? [];
   const categoryName = data?.category;
   const colors = Object.keys(colorMap);
-  const loading = isLoading || isValidating;
   return (
     <Wrapper title={`Sub categories Of ${categoryName ? categoryName:"..."}`}>
       <ErrorLoading
-        loading={loading}
+        loading={isLoading}
+        loadingCard={CategoryCardSkeleton}
+        loadingCount={6}
+        loadingCols={3}
+        loadingRows={2}
         dataLength={subCategories.length}
         emptyMessage="No Sub Categories Found!"
         error={error}

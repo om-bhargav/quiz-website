@@ -1,5 +1,5 @@
 "use client";
-import QuizCard from "@/components/QuizCard";
+import QuizCard, { HomeQuizCardSkeleton } from "@/components/QuizCard";
 import { colorMap } from "@/lib/constants";
 import React, { useEffect, useRef, useState } from "react";
 import ErrorLoading from "@/components/ErrorLoading";
@@ -29,7 +29,7 @@ export default function LiveContests({ selected, setSelected }: Props) {
     <div className="grid gap-4 sm:gap-5">
       {/* Header */}
       <div className="flex text-lg sm:text-2xl font-extrabold items-center justify-between">
-        <div className="uppercase tracking-wide">ALL</div>
+        <div className="uppercase tracking-wide text-sm md:text-md">ALL</div>
 
         <div className="flex gap-1.5 sm:gap-2 items-center text-sm sm:text-base">
           <div
@@ -43,6 +43,10 @@ export default function LiveContests({ selected, setSelected }: Props) {
       <ErrorLoading
         loading={isLoading}
         error={error}
+        loadingCard={HomeQuizCardSkeleton}
+        loadingCount={5}
+        loadingCols={1}
+        loadingRows={5}
         emptyMessage="No Tournaments Found!"
         dataLength={tournaments.length}
       >
@@ -64,7 +68,7 @@ export default function LiveContests({ selected, setSelected }: Props) {
           })}
         </div>
       </ErrorLoading>
-        {isValidating && (
+        {!isLoading && isValidating && (
           <div className="w-full">
             <Loader2 size={20} className="mx-auto animate-spin" />
           </div>

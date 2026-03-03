@@ -4,10 +4,11 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { colorMap } from "@/lib/constants";
 import ErrorLoading from "@/components/ErrorLoading";
-import QuizCard from "@/components/QuizCard";
+import QuizCard, { HomeQuizCardSkeleton } from "@/components/QuizCard";
 import { useParams } from "next/navigation";
 import { useInfiniteScroll } from "@/components/useInfiniteScroll";
 import { Loader2 } from "lucide-react";
+import HomeQuizCard from "@/components/QuizCard";
 export default function page() {
   const { subCategoryId } = useParams();
   const { data, isLoading, error, isValidating, observerRef } =
@@ -27,10 +28,14 @@ export default function page() {
       <ErrorLoading
         loading={isLoading}
         dataLength={tournaments.length}
+        loadingCard={HomeQuizCardSkeleton}
+        loadingCount={5}
+        loadingCols={1}
+        loadingRows={5}
         emptyMessage="No Tournaments Found!"
         error={error}
       >
-        <div className="grid gap-3 p-5">
+        <div className="grid gap-5 p-5">
           {tournaments?.map((quiz: any, index: number) => {
             return (
               <QuizCard

@@ -1,5 +1,5 @@
 "use client";
-import CategoryCard from "@/components/CategoryCard";
+import CategoryCard, { CategoryCardSkeleton } from "@/components/CategoryCard";
 import CustomSwiper from "@/components/CustomSwiper";
 import ErrorLoading from "@/components/ErrorLoading";
 import { colorMap } from "@/lib/constants";
@@ -15,7 +15,7 @@ interface Props {
 export default function CategorySection({ selected, setSelected }: Props) {
   const { data, isLoading, error } = useSWR("/api/categories/", fetcher,{revalidateOnFocus: false,revalidateIfStale: false});
   const colors = Object.keys(colorMap);
-
+  const categories = data?.categories ?? []
   return (
     <div className="space-y-3 sm:space-y-4 px-1 sm:px-0">
       
@@ -26,17 +26,20 @@ export default function CategorySection({ selected, setSelected }: Props) {
       </div>
 
       {/* Swiper */}
-      <div className="max-w-full grid">
+      <div className="max-w-full overflow-hidden grid">
         <ErrorLoading
-          className="overflow-hidden"
           loading={isLoading}
           error={error}
-          dataLength={data?.categories?.length}
+          loadingCard={CategoryCardSkeleton}
+          loadingCount={3}
+          loadingCols={3}
+          loadingRows={1}
+          dataLength={categories.length}
           emptyMessage="No Categories Found!"
         >
           <CustomSwiper>
-            {data?.categories &&
-              [{ name: "defaulttype" }, ...data?.categories].map(
+            {categories &&
+              [{ name: "defaulttype" }, ...categories].map(
                 (cat: any, index: number) =>
                   cat.name === "defaulttype" ? (
                     <CategoryCard
@@ -47,7 +50,7 @@ export default function CategorySection({ selected, setSelected }: Props) {
                       id={"all"}
                       selected={selected === "all"}
                       color={colors[2]}
-                      eventsCount={data.categories.reduce(
+                      eventsCount={categories.reduce(
                         (acc: number, item: any) =>
                           acc + (item?.tournamentsSize ?? 0),
                         0

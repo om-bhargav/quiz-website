@@ -7,6 +7,7 @@ import CategoryCard from "../_components/CategoryCard";
 import { colorMap } from "@/lib/constants";
 import ErrorLoading from "@/components/ErrorLoading";
 import { Category } from "../_components/CategoryCard";
+import { CategoryCardSkeleton } from "@/components/CategoryCard";
 export default function page() {
   const { data, isLoading, error, isValidating } = useSWR(
     "/api/categories/",
@@ -18,10 +19,14 @@ export default function page() {
   );
   const categories = data?.categories ?? [];
   const colors = Object.keys(colorMap);
-  const loading = isLoading || isValidating;
+  const loading = isLoading;
   return (
     <Wrapper title={"categories"}>
       <ErrorLoading
+        loadingCard={CategoryCardSkeleton}
+        loadingCount={6}
+        loadingCols={3}
+        loadingRows={2}
         loading={loading}
         dataLength={categories.length}
         emptyMessage="No Categories Found!"

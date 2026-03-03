@@ -5,6 +5,7 @@ import { ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { colorMap } from "@/lib/constants";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface HomeQuizCardProps {
   id: number;
@@ -106,5 +107,66 @@ export default function HomeQuizCard({
         </CardContent>
       </Card>
     </Link>
+  );
+}
+
+interface HomeQuizCardSkeletonProps {
+  index: number;
+}
+
+export function HomeQuizCardSkeleton({
+  index,
+}: HomeQuizCardSkeletonProps) {
+  const rotation = index % 2 === 0 ? "-0.9deg" : "0.8deg";
+
+  return (
+    <div
+      className="block"
+      style={{ animationDelay: `${index * 0.06}s` }}
+    >
+      <Card
+        className="
+          relative
+          min-h-[120px] sm:min-h-32
+          py-2 sm:py-3
+          rounded-[14px]
+          border-[3px] border-border
+          overflow-hidden
+        "
+        style={{
+          transform: `rotate(${rotation})`,
+        }}
+      >
+        <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-3 h-full">
+          
+          {/* Left Content */}
+          <div className="space-y-2 sm:space-y-3 min-w-0 flex-1">
+
+            {/* Category Badge */}
+            <Skeleton className="h-6 sm:h-7 w-24 rounded-full" />
+
+            <div className="space-y-2">
+              
+              {/* Title */}
+              <Skeleton className="h-4 sm:h-6 w-3/4 rounded-md" />
+
+              {/* Prize Row */}
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-3 sm:h-4 w-12 rounded-md" />
+                <Skeleton className="h-4 sm:h-5 w-20 rounded-md" />
+              </div>
+
+              {/* Players Row */}
+              <Skeleton className="h-3 sm:h-4 w-32 rounded-md" />
+
+            </div>
+          </div>
+
+          {/* Arrow Button Skeleton */}
+          <Skeleton className="w-10 h-10 sm:w-[48px] sm:h-[48px] rounded-[10px]" />
+
+        </CardContent>
+      </Card>
+    </div>
   );
 }

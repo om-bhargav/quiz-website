@@ -15,7 +15,7 @@ export default function Wrapper({ children, title }: Props) {
   return (
     <div className="min-h-full w-full">
       <div
-        className={`min-h-[80px] md:min-h-[100px] 
+        className={`sticky top-0 z-100 min-h-[80px] md:min-h-[100px] 
                     flex flex-col justify-between 
                     p-3 md:p-4 
                     ${colorMap["amber"]} 
@@ -26,7 +26,7 @@ export default function Wrapper({ children, title }: Props) {
           <SpecialIcon Icon={ArrowLeft} onClick={goBack} />
 
           <span
-            className="text-base md:text-2xl 
+            className="text-base
                            font-extrabold uppercase 
                            leading-tight 
                            break-words md:whitespace-nowrap"
