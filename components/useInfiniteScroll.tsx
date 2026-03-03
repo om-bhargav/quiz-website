@@ -1,18 +1,28 @@
-import { useEffect, useRef } from "react";
-import useSWRInfinite from "swr/infinite";
+import { useEffect, useRef, useMemo } from "react";
+import useSWRInfinite, { SWRInfiniteConfiguration } from "swr/infinite";
 
-interface InfiniteOptions<T> {
+interface UseInfiniteScrollOptions<T> {
   endpoint: string;
   fetcher: (url: string) => Promise<T>;
   filter?: Record<string, string | number | undefined>;
+  swrOptions?: SWRInfiniteConfiguration;
 }
 
-export function useInfiniteScroll<T extends { nextCursor: string | null }>(
-  options: InfiniteOptions<T>
-) {
-  const { endpoint, fetcher, filter } = options;
-
+export function useInfiniteScroll<
+  T extends { nextCursor: string | null }
+>({
+  endpoint,
+  fetcher,
+  filter,
+  swrOptions,
+}: UseInfiniteScrollOptions<T>) {
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  // 🔹 stable filter key (prevents infinite rerenders)
+  const filterKey = useMemo(
+    () => JSON.stringify(filter ?? {}),
+    [filter]
+  );
 
   const getKey = (pageIndex: number, previousPageData: T | null) => {
     if (previousPageData && !previousPageData.nextCursor) return null;
@@ -39,26 +49,41 @@ export function useInfiniteScroll<T extends { nextCursor: string | null }>(
     revalidateOnFocus: false,
     revalidateIfStale: false,
     revalidateFirstPage: true,
+    ...swrOptions,
   });
 
-  const { data, size, setSize, isValidating } = swr;
+  const { data, setSize, isValidating } = swr;
 
-  const hasMore = data
-    ? data[data.length - 1]?.nextCursor !== null
-    : true;
+  // 🔹 Reset pages when filter changes
+  useEffect(() => {
+    setSize(1);
+  }, [filterKey]);
+
+  const hasMore =
+    data?.[data.length - 1]?.nextCursor !== null &&
+    data?.[data.length - 1]?.nextCursor !== undefined;
 
   useEffect(() => {
-    if (!observerRef.current || !hasMore) return;
+    const node = observerRef.current;
+    if (!node || !hasMore) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !isValidating && hasMore) {
-        setSize((prev) => prev + 1);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+
+        if (first.isIntersecting && !isValidating && hasMore) {
+          setSize((prev) => prev + 1);
+        }
+      },
+      {
+        rootMargin: "150px", // preload before bottom
       }
-    });
+    );
 
-    observer.observe(observerRef.current);
+    observer.observe(node);
+
     return () => observer.disconnect();
-  }, [isValidating, hasMore, setSize]);
+  }, [hasMore, isValidating, setSize]);
 
   return {
     ...swr,
