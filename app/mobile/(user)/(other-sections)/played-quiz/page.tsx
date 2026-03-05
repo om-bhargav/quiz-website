@@ -1,14 +1,13 @@
 "use client";
-import React, { useEffect } from "react";
-import Wrapper from "../_components/Wrapper";
-import { Award, Trophy } from "lucide-react";
-import { motion } from "framer-motion";
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
-import { HandleSkeleton } from "../../(navigation)/profile/_components/HandleSkeleton";
+import Link from "@/components/AppLink";
 import ErrorLoading from "@/components/ErrorLoading";
 import { getDate } from "@/lib/dateAndTime";
-import Link from "next/link";
+import { fetcher } from "@/lib/fetcher";
+import { motion } from "framer-motion";
+import { Award, Trophy } from "lucide-react";
+import useSWR from "swr";
+import { HandleSkeleton } from "../../(navigation)/profile/_components/HandleSkeleton";
+import Wrapper from "../_components/Wrapper";
 export default function page() {
   const { data, isLoading, error, isValidating } = useSWR(
     "/api/user/profile/played-quiz",

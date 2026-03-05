@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
+import Link from "@/components/AppLink";
 import { colorMap } from "@/lib/constants";
-import SpecialIcon from "@/components/SpecialIcon";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 interface Item {
   title: string;
   Icon: any;

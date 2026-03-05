@@ -1,6 +1,6 @@
 // import link f÷rom next link - msg for om ~
 
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { SITE_NAME } from "@/lib/constants";
 
 const Footer = () => {

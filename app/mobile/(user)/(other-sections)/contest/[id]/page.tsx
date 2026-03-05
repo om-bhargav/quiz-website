@@ -6,6 +6,10 @@ import ErrorLoading from "@/components/ErrorLoading";
 import { QuizCard, QuizCardSkeleton } from "../_components/QuizCard";
 import Wrapper from "../../_components/Wrapper";
 import { useEffect, useState } from "react";
+import { colorMap } from "@/lib/constants";
+import SpecialIcon from "@/components/SpecialIcon";
+import { ArrowLeft } from "lucide-react";
+import useGoBack from "@/components/GoBack";
 export default function page() {
   const { id } = useParams();
   const { data, isLoading, error } = useSWR(
@@ -13,12 +17,47 @@ export default function page() {
     fetcher,
     { revalidateOnFocus: false }
   );
+  const [collapsed, setCollapsed] = useState(false);
   const recommendations = data?.recommendations ?? [];
 
   const item = !isLoading && data?.tournament;
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = Math.round(window.scrollY);
+      setCollapsed((prev)=>(scrollY===0 ? false:true));
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  const minHeight = 150; // final locked height
+  const dynamicHeight = collapsed ? `${minHeight}px`:"max-md:auto";
+  const goBack = useGoBack();
   return (
-    <Wrapper title="contest details">
-        <div className="my-5 mx-2 space-y-3">
+    <div className="w-full">
+      <div className="sticky top-0 z-100 bg-gray-100 max-h-100 overflow-hidden">
+        <div
+          className={`max-h-[100px] md:max-h-[100px] 
+                    flex flex-col justify-between 
+                    p-3 md:p-4 
+                    ${colorMap["amber"]} 
+                    border-b-6 md:border-b-8 border-black 
+                    w-full`}
+        >
+          <div className="flex justify-start flex-1 gap-3 items-center">
+            <SpecialIcon Icon={ArrowLeft} onClick={goBack} />
+
+            <span
+              className="text-base
+                           font-extrabold uppercase 
+                           leading-tight 
+                           break-words md:whitespace-nowrap"
+            >
+              contest details
+            </span>
+          </div>
+        </div>
+
+        <div className="my-5 mx-2 space-y-3 ">
           <div className="flex justify-between items-center">
             <div className="text-sm sm:text-base md:text-2xl font-extrabold uppercase">
               🏆 Highest Prizes
@@ -38,10 +77,14 @@ export default function page() {
             dataLength={item ? 1 : 0}
             emptyMessage="Tournament Does Not Exist!"
           >
-            <QuizCard {...item} index={0} />
+            <QuizCard
+              {...item}
+              index={0}
+              styles={{height: dynamicHeight,transition:"all 0.5s ease"}}
+            />
           </ErrorLoading>
         </div>
-
+      </div>
       <div className="grid gap-4 mx-3">
         <div className="uppercase text-sm sm:text-base md:text-2xl font-extrabold">
           MORE CONTESTS ({data?.recommendations?.length ?? 0})
@@ -56,15 +99,15 @@ export default function page() {
             dataLength={recommendations?.length}
             emptyMessage="No Related Tournaments Found!"
           >
-            {recommendations?.map((quiz: any, index: number) => (
-              quiz.id !== item?.id && (
-                <QuizCard key={quiz.id} {...quiz} index={index} />
-              )
-            ))}
+            {recommendations?.map(
+              (quiz: any, index: number) =>
+                quiz.id !== item?.id && (
+                  <QuizCard key={quiz.id} {...quiz} index={index} />
+                )
+            )}
           </ErrorLoading>
         </div>
       </div>
-    </Wrapper>
+    </div>
   );
 }
-

@@ -1,15 +1,13 @@
 "use client";
 
+import Link from "@/components/AppLink";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
-import { motion } from "framer-motion";
-import { BadgeCheck, Check, CheckCircle, Loader, Loader2, User, User2, X } from "lucide-react";
+import { BadgeCheck, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
-import Link from "next/link";
 
 export default function PasswordConfirmationModal({
   open,

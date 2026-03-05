@@ -1,6 +1,6 @@
-import { colorMap } from "@/lib/constants";
+import Link from "@/components/AppLink";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
+import { colorMap } from "@/lib/constants";
 
 export interface Category {
   id: string | null;

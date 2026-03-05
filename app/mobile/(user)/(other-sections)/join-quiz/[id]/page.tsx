@@ -1,28 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import Wrapper from "../../_components/Wrapper";
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import {
-  Users,
-  FileQuestion,
-  Clock,
-  Zap,
-  Trophy,
-  CheckCircle2,
-  Wallet,
-  Loader2,
-  Clock1,
-  Clock10,
-  Calendar,
-} from "lucide-react";
-import { SlideToContinueModal } from "@/components/SlideToContinueModal";
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
 import { HandleSkeleton } from "@/app/mobile/(user)/(navigation)/profile/_components/HandleSkeleton";
+import Link from "@/components/AppLink";
+import { SlideToContinueModal } from "@/components/SlideToContinueModal";
+import { fetcher } from "@/lib/fetcher";
+import {
+  Calendar,
+  Clock,
+  Clock10,
+  FileQuestion,
+  Loader2,
+  Trophy,
+  Zap
+} from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import Link from "next/link";
+import useSWR from "swr";
+import Wrapper from "../../_components/Wrapper";
 
 const difficultyColors = {
   EASY: "bg-[#A5F3A0]",

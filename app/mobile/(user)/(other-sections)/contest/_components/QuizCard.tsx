@@ -1,10 +1,10 @@
-import { Coins, Zap, ArrowLeft, FileQuestion, Users } from "lucide-react";
-import { CardContent, Card } from "@/components/ui/card";
+import Link from "@/components/AppLink";
 import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
-import Link from "next/link";
-import { colorMap } from "@/lib/constants";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { colorMap } from "@/lib/constants";
+import { Coins, FileQuestion, Radio, Users, Zap } from "lucide-react";
+import { useMemo } from "react";
 
 interface QuizCardProps {
   id?: number;
@@ -13,9 +13,14 @@ interface QuizCardProps {
   prizePool: string;
   totalSeats: number;
   seatsLeft: number;
+  status: string;
+  startTime: string;
+  windowOpenTime: string;
+  endTime: string;
   index: number;
   questions?: number;
   difficulty: "EASY" | "MEDIUM" | "HARD" | "EXPERT";
+  styles?: any;
 }
 
 const difficultyColors = {
@@ -33,10 +38,14 @@ export function QuizCard({
   totalSeats,
   seatsLeft,
   index,
+  startTime,
+  windowOpenTime,
   questions = 10,
   difficulty = "MEDIUM",
+  styles={},
+  endTime,
+  status
 }: QuizCardProps) {
-
   const percentage = useMemo(() => {
     if (!totalSeats) return 0;
     return Math.min(100, ((totalSeats - seatsLeft) / totalSeats) * 100);
@@ -44,17 +53,43 @@ export function QuizCard({
 
   const rotation = index % 2 === 0 ? "-0.6deg" : "0.6deg";
   const colors = Object.values(colorMap);
-
+  const startTimeObject = new Date(startTime);
+  const now = new Date();
+  const diff = startTimeObject.getTime() - now.getTime();
+  const daysLeft = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hoursLeft = Math.floor(
+    (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  const minutesLeft = Math.floor(
+    (diff % (1000 * 60 * 60)) / (1000 * 60)
+  );
+  let message = "";
+  let styleForMe = "";
+  switch(status){
+    case "PUBLISHED":
+      message = `Registrations will open in ${daysLeft>0 ? `${daysLeft} Days, `:""} ${hoursLeft>0 ? `${hoursLeft} Hours, `:""} ${minutesLeft>0 ? `${minutesLeft} Minutes`:""}`
+      styleForMe = "text-yellow-500";
+      break;
+    case "LIVE":
+      message = `Registrations Are Open, Register Now!`
+      styleForMe = "text-green-500";
+      break;
+    default:
+      message = `Event is ${status}`;
+      styleForMe = "text-red-500";
+      break;
+  }
   return (
     <Card
       className={`relative my-3 md:my-4 p-3 md:p-4 rounded-[14px] border-[3px] border-black overflow-hidden
       transition-transform duration-200 hover:scale-[1.01] active:scale-[0.98] ${
-        colors[Math.floor(Math.random() * colors.length)]
+        colors[index%colors.length]
       }`}
 
       style={{
         boxShadow: "5px 5px 0px #000000",
         transform: `rotate(${rotation})`,
+        ...styles
       }}
     >
       <CardContent className="relative z-10 p-0">
@@ -118,7 +153,14 @@ export function QuizCard({
               {difficulty}
             </span>
           </div>
+          
         </div>
+          <div className={`flex items-center gap-1 pt-1 pb-2 animate-pulse ${styleForMe}`}>
+            <Radio className="w-3 h-3 stroke-[2.5px]" />
+            <span className="text-[10px] sm:text-[15px] font-[400] uppercase">
+              {message}
+            </span>
+          </div>
 
         <Link href={`/mobile/join-quiz/${id}`}>
           <Button

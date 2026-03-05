@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Wrapper from "../../../_components/Wrapper";
-import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Clock, Medal, Home, FileQuestion, Trophy } from "lucide-react";
-import Link from "next/link";
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
+import Link from "@/components/AppLink";
 import ErrorLoading from "@/components/ErrorLoading";
-import toast from "react-hot-toast";
+import { fetcher } from "@/lib/fetcher";
+import { motion } from "framer-motion";
+import { Clock, FileQuestion, Home, Medal, Trophy } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import Wrapper from "../../../_components/Wrapper";
 
 function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60);

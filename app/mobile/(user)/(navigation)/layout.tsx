@@ -1,19 +1,10 @@
 "use client";
 import TabsComponent from "@/components/TabsComponent";
 import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import Loading from "@/components/Loading";
 export default function layout({ children }: React.PropsWithChildren) {
-  const [loading, setLoading] = useState(false);
-  const pathName = usePathname();
-  useEffect(() => {
-    setLoading(true);
-    const timeout = setTimeout(() => setLoading(false), 300);
-    return () => clearTimeout(timeout);
-  }, [pathName]);
   return (
     <div className="pb-25 grid self-start! w-full">
-      {loading ? <Loading /> : children}
+      {children}
       <TabsComponent />
     </div>
   );

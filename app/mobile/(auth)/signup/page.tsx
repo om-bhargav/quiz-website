@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+import Link from "@/components/AppLink";
+import { InputField, NextButton } from "@/components/FormComponents";
+import { EMAIL_PATTERN } from "@/lib/constants";
 import {
-  User,
+  ChevronDown,
+  Lock,
   Mail,
   Phone,
-  Lock,
-  Eye,
-  EyeOff,
-  ChevronDown,
+  User
 } from "lucide-react";
-import { InputField, NextButton } from "@/components/FormComponents";
-import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
-import { EMAIL_PATTERN } from "@/lib/constants";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 const initialData = {
   name: "",
   email: "",

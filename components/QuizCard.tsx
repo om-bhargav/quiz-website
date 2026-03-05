@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
-import { ArrowRight, Users } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { Card, CardContent } from "@/components/ui/card";
-import { colorMap } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { colorMap } from "@/lib/constants";
+import { ArrowRight, Users } from "lucide-react";
 
 interface HomeQuizCardProps {
   id: number;

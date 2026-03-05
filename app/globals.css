@@ -129,3 +129,21 @@
 ::-webkit-scrollbar,::-webkit-scrollbar-button,::-webkit-scrollbar-thumb{
   display: none;
 }
+
+
+#nprogress .spinner-icon {
+  border-top-color: #6366f1;
+  border-left-color: #6366f1;
+}
+
+#nprogress .spinner {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+#nprogress .spinner-icon {
+  width: 40px;
+  height: 40px;
+}

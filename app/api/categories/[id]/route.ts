@@ -130,7 +130,6 @@ export async function DELETE(
       { status: 200 }
     );
   } catch(error: any) {
-    console.log(error);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }

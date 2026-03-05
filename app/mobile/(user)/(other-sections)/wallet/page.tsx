@@ -1,13 +1,12 @@
 "use client";
 
-import React from "react";
-import Wrapper from "../_components/Wrapper";
-import { Coins, Plus, TrendingUp, Wallet } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import useSWR from "swr";
+import Link from "@/components/AppLink";
 import { fetcher } from "@/lib/fetcher";
+import { motion } from "framer-motion";
+import { Coins, Plus, TrendingUp, Wallet } from "lucide-react";
+import useSWR from "swr";
 import { HandleSkeleton } from "../../(navigation)/profile/_components/HandleSkeleton";
+import Wrapper from "../_components/Wrapper";
 
 export default function Page() {
   const balance = 5240;

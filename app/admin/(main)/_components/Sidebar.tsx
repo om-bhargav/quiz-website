@@ -1,24 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "@/components/AppLink";
 import {
-  LayoutDashboard,
-  Users,
-  LogOut,
   Box,
-  Menu,
-  Trophy,
-  Tags,
   Images,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Tags,
+  Trophy,
+  Users,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { SITE_NAME } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 
 const navItems = [

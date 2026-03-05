@@ -1,13 +1,13 @@
 "use client";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "@/components/AppLink";
 import Loader from "@/components/Loader";
-import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { BricolageFont, DMFont } from "@/lib/fonts";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { BricolageFont, DMFont } from "@/lib/fonts";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 const phaseVariants = {
   phase1: {
     initial: { opacity: 0, x: 60 },

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "react-hot-toast";
-import { signIn } from "next-auth/react";
-import { Mail, Lock, User, Loader2, ArrowLeft } from "lucide-react";
+import Link from "@/components/AppLink";
 import { AuthInput } from "@/components/AuthInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, Loader2, Lock, Mail, User } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import * as z from "zod";
 
 const registerSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 chars"),

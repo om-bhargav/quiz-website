@@ -178,7 +178,6 @@ export async function DELETE( req: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({ success: true, message: "Tournament deleted successfully" }, { status: 200 });
   } catch(error: any) {
-    console.log(error.message);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }

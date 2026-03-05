@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 import SessionSync from "@/components/SessionSync";
 import TrackTraffic from "@/components/TrackTraffic";
 import { SITE_NAME } from "@/lib/constants";
+import NextTopLoader from "nextjs-toploader";
+import LoaderProvider from "@/components/LoaderProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,7 +39,9 @@ export default function RootLayout({
           <AuthProvider>
             <SessionSync>
               <TrackTraffic>
-                <div className="min-h-screen grid">{children}</div>
+                <LoaderProvider>
+                  <div className="min-h-screen grid">{children}</div>
+                </LoaderProvider>
               </TrackTraffic>
             </SessionSync>
           </AuthProvider>

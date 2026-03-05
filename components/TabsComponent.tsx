@@ -1,9 +1,8 @@
 "use client";
-import React from "react";
-import { usePathname } from "next/navigation";
-import { Home, User } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/AppLink";
 import { colorMap } from "@/lib/constants";
+import { Home, User } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function TabsComponent() {
   const pathName = usePathname();

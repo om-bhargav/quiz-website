@@ -1,10 +1,10 @@
 "use client";
+import Link from "@/components/AppLink";
 import CategoryCard, { CategoryCardSkeleton } from "@/components/CategoryCard";
 import CustomSwiper from "@/components/CustomSwiper";
 import ErrorLoading from "@/components/ErrorLoading";
 import { colorMap } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
-import Link from "next/link";
 import useSWR from "swr";
 
 interface Props {
