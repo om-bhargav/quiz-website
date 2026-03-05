@@ -94,7 +94,6 @@ export async function DELETE(
     }
 
     const { id } = await params;
-
     const existingCategory = await prisma.category.findUnique({
       where: { id },
     });
@@ -118,16 +117,20 @@ export async function DELETE(
         { status: 400 }
       );
     }
-
+    
     await prisma.category.delete({
       where: { id },
+      include:{
+        subCategories: true
+      }
     });
 
     return NextResponse.json(
       { success: true, message: "Category Deleted" },
       { status: 200 }
     );
-  } catch {
+  } catch(error: any) {
+    console.log(error);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }

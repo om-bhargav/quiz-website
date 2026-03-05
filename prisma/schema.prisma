@@ -145,9 +145,8 @@ model SubCategory {
   id          String   @id @default(uuid())
   name        String   @unique
   createdAt   DateTime @default(now())
-
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category @relation(fields: [categoryId], references: [id],onDelete: Cascade)
   tournaments Tournament[]
 }
 // enum TournamentStatus {
@@ -258,7 +257,7 @@ model Bots {
   timeTaken Float
   rank Int
   
-  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  tournament Tournament @relation(fields: [tournamentId], references: [id],onDelete: Cascade)
 }
 
 model Otp {

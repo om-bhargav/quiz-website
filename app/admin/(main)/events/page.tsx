@@ -76,6 +76,7 @@ export default function page() {
   };
   const handleDelete = async (tournamentId: string) => {
     try {
+      setPending(true)
       const request = await fetch(`/api/admin/tournaments/${tournamentId}`, {
         method: "DELETE",
       });
@@ -87,6 +88,8 @@ export default function page() {
       await mutate();
     } catch (error: any) {
       toast.error(error.message);
+    }finally{
+      setPending(false);
     }
   };
   return (

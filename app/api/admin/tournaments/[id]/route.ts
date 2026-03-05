@@ -174,10 +174,11 @@ export async function DELETE( req: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ success: true, message: "Tournament not found" }, { status: 404 });
     }
 
-    await prisma.tournament.delete({ where: { id: tournamentId }});
+    await prisma.tournament.delete({ where: { id: tournamentId },include: {bots: true,questions: true,registration: true}});
 
     return NextResponse.json({ success: true, message: "Tournament deleted successfully" }, { status: 200 });
-  } catch {
+  } catch(error: any) {
+    console.log(error.message);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }
