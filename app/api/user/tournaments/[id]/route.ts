@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const defaultStatus = ["LIVE","PUBLISHED"];
+    const defaultStatus = ["LIVE", "PUBLISHED"];
     if (!id) {
       throw Error();
     }
@@ -31,28 +31,38 @@ export async function GET(
         _count: { select: { registration: true } },
       },
     });
-    if(!tournament){
+    if (!tournament) {
       throw Error("Tournament Not Found!");
     }
-    const recommendedTournaments = (await prisma.tournament.findMany({
-      where: { NOT: { id: id },categoryId: tournament.category.id, },
-      select: {
-        id: true,
-        title: true,
-        category: true,
-        startTime: true,
-        durationPerQ: true,
-        totalQuestions: true,
-        windowOpenTime: true,
-        endTime: true,
-        entryFee: true,
-        prizePool: true,
-        totalSeats: true,
-        winningSeats: true,
-        difficulty: true,
-        _count: { select: { registration: true } },
-      },
-    }))?.filter((quiz)=>{
+    const Timenow = new Date();
+    const recommendedTournaments = (
+      await prisma.tournament.findMany({
+        where: {
+          NOT: { id: id },
+          categoryId: tournament.category.id,
+          AND: [
+            { windowOpenTime: { lte: Timenow } },
+            { endTime: { gte: Timenow } },
+          ],
+        },
+        select: {
+          id: true,
+          title: true,
+          category: true,
+          startTime: true,
+          durationPerQ: true,
+          totalQuestions: true,
+          windowOpenTime: true,
+          endTime: true,
+          entryFee: true,
+          prizePool: true,
+          totalSeats: true,
+          winningSeats: true,
+          difficulty: true,
+          _count: { select: { registration: true } },
+        },
+      })
+    )?.filter((quiz) => {
       return defaultStatus.includes(getTournamentStatus(quiz));
     });
     const formatted = ({

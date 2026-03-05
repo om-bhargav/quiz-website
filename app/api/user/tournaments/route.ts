@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getTournamentStatus } from "@/lib/getTournamentStatus";
+import { Prisma, Tournament } from "@prisma/client";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -11,12 +12,13 @@ export async function GET(req: NextRequest) {
     const subCategoryId = searchParams.get("subCategoryId");
     const limit = parseInt(searchParams.get("limit") || "10");
     const defaultStatus = ["LIVE", "PUBLISHED"];
+    const Timenow = new Date();
     let isNextPage = false;
     let nextCursor = null;
     if (filter) {
       defaultStatus.push(filter);
     }
-    const whereClause: any = {};
+    const whereClause: Prisma.TournamentWhereInput = {};
 
     if (search) {
       whereClause.title = {
@@ -31,10 +33,17 @@ export async function GET(req: NextRequest) {
     if (subCategoryId) {
       whereClause.subCategoryId = subCategoryId;
     }
+    
     const tournaments = await prisma.tournament.findMany({
       take: limit + 1,
       cursor: cursor ? { id: cursor } : undefined,
-      where: whereClause,
+      where: {
+        ...whereClause,
+        AND:[
+          {windowOpenTime: {lte: Timenow}},
+          {endTime: {gte: Timenow}}
+        ]
+      },
       orderBy: { startTime: "asc" },
       select: {
         id: true,
