@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useLoader } from "@/components/LoaderProvider";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+    const { setIsLoading } = useLoader();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ export default function AdminLoginPage() {
       if (result?.error) {
         throw Error(result.error);
       }
-      
+      setIsLoading(true);
       router.push("/admin");
     } catch (err: any) {
       setError(err.message || "Something went wrong");

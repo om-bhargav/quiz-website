@@ -11,6 +11,7 @@ import PasswordConfirmationModal from "@/components/PasswordConfirmationModal";
 import { NextButton } from "@/components/FormComponents";
 import toast from "react-hot-toast";
 import { EMAIL_PATTERN } from "@/lib/constants";
+import { useLoader } from "@/components/LoaderProvider";
 const phaseVariants = {
   phase2: {
     initial: { opacity: 0, scale: 0.9 },
@@ -25,6 +26,7 @@ const phaseVariants = {
 };
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const { setIsLoading } = useLoader();
   const [data, setData] = useState({
     email: "",
     npass: "",
@@ -79,6 +81,7 @@ export default function ForgotPasswordPage() {
         await new Promise((resolve, reject) => {
           setTimeout(() => {
             setOpen(false);
+            setIsLoading(true);
             router.push("/mobile");
             resolve(3);
           }, 3000);

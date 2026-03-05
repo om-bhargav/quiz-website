@@ -1,6 +1,7 @@
 "use client";
 import Link from "@/components/AppLink";
 import { InputField, NextButton } from "@/components/FormComponents";
+import { useLoader } from "@/components/LoaderProvider";
 import { EMAIL_PATTERN } from "@/lib/constants";
 import { Mail } from "lucide-react";
 import { signIn } from "next-auth/react";
@@ -12,6 +13,7 @@ const initialData = {
   password: "",
 };
 export default function Login() {
+  const { setIsLoading } = useLoader();
   const router = useRouter();
   const [data, setData] = useState(initialData);
   const [error, setError] = useState("");
@@ -32,6 +34,7 @@ export default function Login() {
       if (result?.error) {
         throw Error(result.error);
       }
+      setIsLoading(true);
       router.push("/mobile");
     } catch (error: any) {
       console.log(error.message);

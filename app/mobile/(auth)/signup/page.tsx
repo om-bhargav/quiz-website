@@ -2,6 +2,7 @@
 
 import Link from "@/components/AppLink";
 import { InputField, NextButton } from "@/components/FormComponents";
+import { useLoader } from "@/components/LoaderProvider";
 import { EMAIL_PATTERN } from "@/lib/constants";
 import {
   ChevronDown,
@@ -30,6 +31,7 @@ interface InitialDataStructure {
   password: string;
 }
 export default function Signup() {
+  const { setIsLoading } = useLoader();
   const router = useRouter();
   const [step, setStep] = useState<"signup" | "otp">("signup");
   const [data, setData] = useState<any>(initialData);
@@ -105,6 +107,7 @@ export default function Signup() {
       if (result?.error) {
         throw Error(result.error);
       }
+      setIsLoading(true);
       router.push("/mobile");
     }catch(error: any){
       setError(error.message);
