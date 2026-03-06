@@ -5,7 +5,7 @@ import { fetcher } from "@/lib/fetcher";
 import ErrorLoading from "@/components/ErrorLoading";
 import { QuizCard, QuizCardSkeleton } from "../_components/QuizCard";
 import Wrapper from "../../_components/Wrapper";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { colorMap } from "@/lib/constants";
 import SpecialIcon from "@/components/SpecialIcon";
 import { ArrowLeft } from "lucide-react";
@@ -17,23 +17,27 @@ export default function page() {
     fetcher,
     { revalidateOnFocus: false }
   );
-  const [collapsed, setCollapsed] = useState(false);
+  const [isShrunk, setIsShrunk] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollValue = window.scrollY;
+      setIsShrunk((prev) => {
+        if (!prev && scrollValue > 80) return true;
+        if (prev && scrollValue < 40) return false;
+        return prev;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const recommendations = data?.recommendations ?? [];
 
   const item = !isLoading && data?.tournament;
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = Math.round(window.scrollY);
-      setCollapsed((prev)=>(scrollY===0 ? false:true));
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
   const minHeight = 150; // final locked height
-  const dynamicHeight = collapsed ? `${minHeight}px`:"max-md:auto";
   const goBack = useGoBack();
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       <div className="sticky top-0 z-100 bg-gray-100 max-h-100 overflow-hidden">
         <div
           className={`max-h-[100px] md:max-h-[100px] 
@@ -77,11 +81,7 @@ export default function page() {
             dataLength={item ? 1 : 0}
             emptyMessage="Tournament Does Not Exist!"
           >
-            <QuizCard
-              {...item}
-              index={0}
-              styles={{height: dynamicHeight,transition:"all 0.5s ease"}}
-            />
+            <QuizCard {...item} index={0} shrunk={isShrunk} />
           </ErrorLoading>
         </div>
       </div>

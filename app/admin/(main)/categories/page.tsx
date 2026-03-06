@@ -14,7 +14,6 @@ export default function page() {
     data,
     isLoading: loading,
     error,
-    isValidating,
     mutate,
   } = useSWR("/api/categories", fetcher,{revalidateOnFocus:false});
   const [open, setOpen] = useState(false);
@@ -96,7 +95,7 @@ export default function page() {
       </h1>
       <ErrorLoading
         error={error}
-        loading={loading || isValidating}
+        loading={loading}
         dataLength={data?.categories?.length}
         emptyMessage="No Categories Found!"
       >

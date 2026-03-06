@@ -102,6 +102,7 @@ export default function SubCategoriesPage({
       setPending(false);
     }
   };
+  const subcategories = data?.subCategories ?? [];
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -117,13 +118,13 @@ export default function SubCategoriesPage({
         </Button>
       </div>
       <ErrorLoading
-        loading={isLoading || isValidating}
+        loading={isLoading}
         error={error}
-        dataLength={data?.subcategories?.length}
+        dataLength={subcategories?.length}
         emptyMessage="No Subcategories Found!"
       >
         <div className="grid gap-4 md:grid-cols-3">
-          {data?.subcategories?.map((sub: SubCategory) => (
+          {subcategories?.map((sub: SubCategory) => (
             <SubCategoryCard
               key={sub.id}
               sub={sub}

@@ -14,7 +14,6 @@ export default function page() {
     data,
     isLoading: loading,
     error,
-    isValidating,
     mutate,
   } = useSWR("/api/admin/plans", fetcher,{revalidateOnFocus:false});
   const [pending, setPending] = useState(false);
@@ -86,7 +85,7 @@ export default function page() {
         </PlanFormModal>
       </h1>
       <ErrorLoading
-        loading={loading || isValidating}
+        loading={loading}
         error={error}
         dataLength={data?.plans?.length}
         emptyMessage="No Plans Added!"

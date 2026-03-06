@@ -20,7 +20,7 @@ interface QuizCardProps {
   index: number;
   questions?: number;
   difficulty: "EASY" | "MEDIUM" | "HARD" | "EXPERT";
-  styles?: any;
+  shrunk?: any;
 }
 
 const difficultyColors = {
@@ -42,7 +42,7 @@ export function QuizCard({
   windowOpenTime,
   questions = 10,
   difficulty = "MEDIUM",
-  styles={},
+  shrunk=false,
   endTime,
   status
 }: QuizCardProps) {
@@ -89,7 +89,6 @@ export function QuizCard({
       style={{
         boxShadow: "5px 5px 0px #000000",
         transform: `rotate(${rotation})`,
-        ...styles
       }}
     >
       <CardContent className="relative z-10 p-0">
@@ -114,7 +113,6 @@ export function QuizCard({
             </div>
           </div>
         </div>
-
         <div className="mb-2 md:mb-3">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1">
@@ -135,7 +133,6 @@ export function QuizCard({
             />
           </div>
         </div>
-
         <div className="mb-2 md:mb-3 flex items-center justify-end gap-1 md:gap-2">
           <div className="flex items-center gap-1 bg-white/90 px-2 py-1 rounded-[6px] border-[2px] border-black">
             <FileQuestion className="w-3 h-3 stroke-[2.5px]" />
@@ -161,7 +158,7 @@ export function QuizCard({
               {message}
             </span>
           </div>
-
+        {!shrunk && 
         <Link href={`/mobile/join-quiz/${id}`}>
           <Button
             className="w-full bg-gray-800 hover:bg-black text-white 
@@ -172,7 +169,7 @@ export function QuizCard({
             Join Quiz →
           </Button>
         </Link>
-
+        }
       </CardContent>
     </Card>
   );

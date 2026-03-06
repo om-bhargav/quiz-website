@@ -17,7 +17,7 @@ export default function page() {
         revalidateOnFocus: false
     }
   );
-  const loading = isLoading || isValidating;
+  const loading = isLoading;
   const banners = data?.data ?? [];
   const [pending, setPending] = useState(false);
   const handleUpsert = async (data: Banner, mode: "create" | "edit") => {
@@ -73,7 +73,7 @@ export default function page() {
         </div>
       </h1>
       <ErrorLoading
-        loading={loading || isValidating}
+        loading={loading}
         error={error}
         dataLength={banners.length}
         emptyMessage="No Banners Added!"

@@ -13,7 +13,6 @@ export default function page() {
     data,
     isLoading: loading,
     error,
-    isValidating,
     mutate,
   } = useSWR("/api/admin/tournaments", fetcher,{revalidateOnFocus:false});
   const [open, setOpen] = useState(false);
@@ -107,7 +106,7 @@ export default function page() {
         </div>
       </h1>
       <ErrorLoading
-        loading={loading || isValidating}
+        loading={loading}
         error={error}
         dataLength={searchedEvents?.length}
         emptyMessage="No Tournaments Exist!"

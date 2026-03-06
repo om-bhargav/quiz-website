@@ -108,7 +108,7 @@ export default function page() {
       </div>
       <ErrorLoading
         error={error}
-        loading={loading || isValidating}
+        loading={loading}
         dataLength={searchedUsers?.length}
         emptyMessage="No Users Found"
       >
